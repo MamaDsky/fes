@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access. Please login first.']);
+    exit;
+}
 header("Content-Type: application/json");
 require_once '../../config/database.php';
 

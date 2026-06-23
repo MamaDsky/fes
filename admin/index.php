@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id" class="h-full">
 <head>
@@ -234,6 +242,21 @@
     </div>
 
     <script>
+
+
+// Tambahkan fungsi ini di bagian paling atas tag <script> kamu
+function escapeHTML(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(string).replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+
         document.addEventListener("DOMContentLoaded", () => {
             loadRegistrations();
             document.getElementById('searchInput').addEventListener('input', () => {
@@ -320,8 +343,8 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-white/40 transition-all border-b border-manifest-dark/[0.02]">
                         <td class="py-4 px-8"><span class="px-2.5 py-0.5 text-[8px] font-bold tracking-widest rounded-md uppercase ${badgeClass}">${row.competition_type}</span></td>
-                        <td class="py-4 px-6 font-bold text-manifest-dark text-xs">${row.team_name}</td>
-                        <td class="py-4 px-6 text-manifest-dark/60 text-xs">${row.leader_name}</td>
+                        <td class="py-4 px-6 font-bold text-manifest-dark text-xs">${escapeHTML(row.team_name)}</td>
+                        <td class="py-4 px-6 text-manifest-dark/60 text-xs">${escapeHTML(row.leader_name)}</td>
                         <td class="py-4 px-6 font-bold text-manifest-dark text-xs">Rp ${parseInt(row.final_amount).toLocaleString('id-ID')}</td>
                         <td class="py-4 px-8 text-right">
                             <button onclick="openDetail(${row.id})" class="text-manifest-dark text-[9px] tracking-widest font-bold uppercase bg-white hover:bg-white/40 border border-manifest-dark/10 px-4 py-2 rounded-full transition-all cursor-pointer">

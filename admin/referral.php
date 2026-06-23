@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id" class="h-full">
 <head>
@@ -154,6 +162,18 @@
     </div>
 
     <script>
+
+        // Tambahkan fungsi ini di bagian paling atas tag <script> kamu
+function escapeHTML(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(string).replace(/[&<>"']/g, function(m) { return map[m]; });
+}
         document.addEventListener("DOMContentLoaded", loadReferrals);
         document.getElementById('refSearchInput').addEventListener('input', renderTableGrid);
 
