@@ -1,150 +1,385 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pendaftar — MANIFEST Admin</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-[#f5f5f7] min-h-screen text-[#1d1d1f] p-6">
+    <title>MANIFEST Admin Hub — Data Pendaftar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['"Alte Haas Grotesk"', 'Arial', 'sans-serif'],
+                        body: ['"Alte Haas Grotesk"', 'Arial', 'sans-serif'],
+                        accent: ['"Instrument Serif"', 'serif'],
+                    },
+                    colors: {
+                        manifest: {
+                            dark: '#220701',       // Hitam Kopi Pekat GSM
+                            cream: '#D8CEA8',      // Cream Gold Muted
+                            burgundy: '#520000',   // Merah Marun Tua
+                            rose: '#9C4F51',       // Marun Kalem / Rose Muted
+                            forest: '#1F312F',     // Hijau Hutan Gelap
+                            milk: '#F5F0E3',       // Putih Susu Base
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #F5F0E3;
+            color: #220701;
+            letter-spacing: -0.01em;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #220701; border-radius: 10px; }
 
-    <div class="max-w-6xl mx-auto space-y-6">
-        <header class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-xs border border-gray-100">
-            <div>
-                <h1 class="text-xl font-black tracking-tight">MANIFEST 2026 Admin Hub</h1>
-                <p class="text-xs text-gray-400 mt-0.5">Manajemen Berkas & Registrasi Peserta</p>
+        .gsm-texture {
+            position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.25; mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+        }
+        .sidebar-blur {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .header-blur {
+            background: rgba(245, 240, 227, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="h-full overflow-hidden font-body antialiased flex">
+
+    <div class="gsm-texture"></div>
+
+    <aside class="w-64 border-r border-manifest-dark/10 sidebar-blur flex flex-col justify-between z-20 shrink-0">
+        <div class="p-6">
+            <div class="mb-8">
+                <h1 class="text-xl font-bold tracking-tighter uppercase text-manifest-dark">MANIFEST 2026<span class="text-manifest-rose">.</span></h1>
+                <p class="font-accent italic text-lg text-manifest-rose leading-none mt-0.5">Admin Central</p>
             </div>
-            <div class="flex gap-2">
-                <a href="index.php" class="bg-indigo-50 text-indigo-700 text-xs font-bold px-4 py-2 rounded-xl border border-indigo-100">Data Pendaftar</a>
-                <a href="referral.php" class="bg-white text-gray-600 text-xs font-bold px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50">Kelola Referral</a>
+
+            <nav class="space-y-1">
+                <span class="text-[9px] font-bold uppercase tracking-widest text-manifest-dark/30 block mb-2 px-3">Data Management</span>
+                <a href="index.php" class="flex items-center gap-3 bg-manifest-dark text-white text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl shadow-xs transition-all">
+                    <i class="fa-solid fa-chart-simple w-4 text-center"></i> Data Pendaftar
+                </a>
+                <a href="referral.php" class="flex items-center gap-3 text-manifest-dark/60 hover:text-manifest-dark text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all">
+                    <i class="fa-solid fa-ticket w-4 text-center"></i> Referral Code
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-6 border-t border-manifest-dark/5">
+            <button onclick="exportTableToCSV('manifest-pendaftar-2026.csv')" class="w-full bg-white hover:bg-white/60 text-manifest-dark border border-manifest-dark/10 text-[9px] font-bold uppercase tracking-widest py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-file-csv text-xs"></i> Export CSV Data
+            </button>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+        
+        <header class="h-20 border-b border-manifest-dark/10 header-blur px-8 flex justify-between items-center shrink-0">
+            <div>
+                <h2 class="text-sm font-bold tracking-tight uppercase text-manifest-dark">Dashboard Hub</h2>
+                <p class="text-[10px] text-manifest-dark/40">Manajemen Registrasi Berkas & Validasi Keuangan</p>
+            </div>
+
+            <div class="bg-manifest-dark/5 px-4 py-2 rounded-xl text-right">
+                <span class="text-[8px] uppercase tracking-widest text-manifest-dark/40 block">Estimated Revenue</span>
+                <span class="text-sm font-bold tracking-tight text-manifest-dark" id="stat_revenue">Rp 0</span>
             </div>
         </header>
 
-        <main class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-                <h2 class="font-bold text-gray-800 text-sm">Semua Tim Terregistrasi</h2>
-                <span class="text-xs font-semibold text-gray-400" id="total_teams">Loading...</span>
+        <div class="p-6 border-b border-manifest-dark/5 grid grid-cols-2 lg:grid-cols-4 gap-4 bg-white/10 shrink-0">
+            <div class="bg-white/50 p-4 rounded-2xl border border-manifest-dark/[0.04]">
+                <span class="text-[9px] text-manifest-dark/40 block uppercase font-bold tracking-wider">Total Tim Terdaftar</span>
+                <span class="font-accent italic text-3xl font-bold mt-1 block" id="side_total">0</span>
             </div>
+            <div class="bg-white/50 p-4 rounded-2xl border border-manifest-dark/[0.04]">
+                <span class="text-[9px] text-manifest-rose block uppercase font-bold tracking-wider">Business Plan (BPC)</span>
+                <span class="font-accent italic text-3xl font-bold text-manifest-rose mt-1 block" id="side_bpc">0</span>
+            </div>
+            <div class="bg-white/50 p-4 rounded-2xl border border-manifest-dark/[0.04]">
+                <span class="text-[9px] text-manifest-burgundy block uppercase font-bold tracking-wider">Business Case (BCC)</span>
+                <span class="font-accent italic text-3xl font-bold text-manifest-burgundy mt-1 block" id="side_bcc">0</span>
+            </div>
+            <div class="bg-white/50 p-4 rounded-2xl border border-manifest-dark/[0.04]">
+                <span class="text-[9px] text-manifest-forest block uppercase font-bold tracking-wider">Economics BPC (EBPC)</span>
+                <span class="font-accent italic text-3xl font-bold text-manifest-forest mt-1 block" id="side_ebpc">0</span>
+            </div>
+        </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-gray-500">
-                    <thead class="text-gray-400 bg-gray-50/30 uppercase text-[10px] tracking-wider border-b border-gray-100">
-                        <tr>
-                            <th class="py-3.5 px-6">Kategori</th>
-                            <th class="py-3.5 px-6">Nama Tim</th>
-                            <th class="py-3.5 px-6">Ketua Tim</th>
-                            <th class="py-3.5 px-6">Total Bayar</th>
-                            <th class="py-3.5 px-6 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="registrationTable" class="divide-y divide-gray-100 text-gray-700">
-                        </tbody>
-                </table>
+        <div class="p-6 border-b border-manifest-dark/5 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white/5 shrink-0">
+            <div class="relative w-full sm:w-80">
+                <span class="absolute inset-y-0 left-4 flex items-center text-manifest-dark/30 text-xs">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="Cari Nama Tim, Ketua, atau Billing..." class="w-full bg-white text-xs pl-10 pr-4 py-2.5 rounded-xl border border-manifest-dark/10 focus:outline-none focus:border-manifest-rose text-manifest-dark transition-all placeholder-manifest-dark/30">
             </div>
-        </main>
+            
+            <div class="flex gap-1 w-full sm:w-auto overflow-x-auto">
+                <button onclick="filterCategory('ALL')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-manifest-dark text-white transition-all" data-cate="ALL">All Movements</button>
+                <button onclick="filterCategory('BPC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="BPC">Business Plan</button>
+                <button onclick="filterCategory('BCC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="BCC">Business Case</button>
+                <button onclick="filterCategory('EBPC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="EBPC">Economics BPC</button>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-auto bg-white/20">
+            <table class="w-full text-left text-xs min-w-[800px]">
+                <thead class="text-manifest-dark/40 bg-manifest-dark/[0.02] uppercase text-[9px] tracking-widest sticky top-0 backdrop-blur-md border-b border-manifest-dark/5 z-10">
+                    <tr>
+                        <th class="py-4 px-8 w-32">Kategori</th>
+                        <th class="py-4 px-6">Nama Tim / Institusi</th>
+                        <th class="py-4 px-6">Ketua Perwakilan</th>
+                        <th class="py-4 px-6">Nominal Transaksi</th>
+                        <th class="py-4 px-8 text-right w-40">Aksi Berkas</th>
+                    </tr>
+                </thead>
+                <tbody id="registrationTable" class="divide-y divide-manifest-dark/[0.03] text-manifest-dark font-medium">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="h-16 border-t border-manifest-dark/10 header-blur px-8 flex items-center justify-between shrink-0 text-xs">
+            <div class="text-manifest-dark/50 text-[11px]" id="paginationInfo">
+                Showing 0 to 0 of 0 teams
+            </div>
+            <div class="flex items-center gap-1" id="paginationControls">
+                </div>
+        </div>
     </div>
 
-    <div id="detailModal" class="fixed inset-0 bg-black/30 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl w-full max-w-2xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
-            <div class="p-5 border-b flex justify-between items-center bg-gray-50">
+    <div id="detailModal" class="fixed inset-0 bg-manifest-dark/30 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-[#F5F0E3] border border-manifest-dark/10 rounded-[2rem] w-full max-w-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-manifest-dark/5 flex justify-between items-center bg-white/30">
                 <div>
-                    <h3 class="font-bold text-gray-900 text-sm">Review & Edit Data Registrasi</h3>
-                    <p class="text-[11px] text-gray-400" id="md_comp_type">Kategori: -</p>
+                    <h3 class="font-bold text-manifest-dark text-sm uppercase tracking-tight">Review & Edit Data Registrasi</h3>
+                    <p class="text-[10px] uppercase tracking-widest text-manifest-rose font-bold mt-0.5" id="md_comp_type">Kategori: -</p>
                 </div>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 font-bold text-sm">✕</button>
+                <button onclick="closeModal()" class="text-manifest-dark/40 hover:text-manifest-dark font-bold text-sm p-2">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
             </div>
 
-            <form id="editRegForm" class="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
+            <form id="editRegForm" class="p-6 space-y-5 overflow-y-auto flex-1 text-xs">
                 <input type="hidden" name="id" id="md_id">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-bold text-gray-500 uppercase text-[10px]">Nama Tim</label>
-                        <input type="text" name="team_name" id="md_team_name" class="w-full mt-1 p-2 border rounded-xl bg-white focus:ring-1 focus:ring-indigo-500">
+                        <label class="block font-bold text-manifest-dark/40 uppercase text-[9px] tracking-wider">Nama Tim</label>
+                        <input type="text" name="team_name" id="md_team_name" class="w-full mt-1.5 p-3 border border-manifest-dark/10 rounded-xl bg-white focus:outline-none focus:border-manifest-rose text-manifest-dark font-semibold">
                     </div>
                     <div>
-                        <label class="block font-bold text-gray-500 uppercase text-[10px]">Metode / Pemilik Rekening</label>
-                        <input type="text" id="md_payment_info" readonly class="w-full mt-1 p-2 border rounded-xl bg-gray-50 text-gray-400 cursor-not-allowed">
-                    </div>
-                </div>
-
-                <div class="p-4 bg-indigo-50/40 rounded-2xl border border-indigo-50 grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="md:col-span-2 font-bold text-indigo-900">Data Ketua (Member 1)</div>
-                    <div>
-                        <label class="block text-gray-500 font-medium">Nama Lengkap</label>
-                        <input type="text" name="leader_name" id="md_leader_name" class="w-full mt-1 p-2 border bg-white rounded-lg">
-                    </div>
-                    <div>
-                        <label class="block text-gray-500 font-medium">WhatsApp</label>
-                        <input type="text" name="leader_whatsapp" id="md_leader_wa" class="w-full mt-1 p-2 border bg-white rounded-lg">
+                        <label class="block font-bold text-manifest-dark/40 uppercase text-[9px] tracking-wider">Metode / Pemilik Rekening</label>
+                        <input type="text" id="md_payment_info" readonly class="w-full mt-1.5 p-3 border border-manifest-dark/5 rounded-xl bg-manifest-dark/[0.02] text-manifest-dark/40 cursor-not-allowed font-medium">
                     </div>
                 </div>
 
-                <div class="p-4 bg-emerald-50/40 rounded-2xl border border-emerald-50 grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="md:col-span-2 font-bold text-emerald-900">Data Anggota 2</div>
+                <div class="p-5 bg-white/30 rounded-2xl border border-manifest-dark/5 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="md:col-span-2 font-bold text-manifest-burgundy uppercase text-[9px] tracking-widest border-b border-manifest-dark/5 pb-2">Delegasi Utama (Ketua)</div>
                     <div>
-                        <label class="block text-gray-500 font-medium">Nama Lengkap</label>
-                        <input type="text" name="member_name" id="md_member_name" class="w-full mt-1 p-2 border bg-white rounded-lg">
+                        <label class="block text-manifest-dark/50 text-[10px] uppercase">Nama Lengkap</label>
+                        <input type="text" name="leader_name" id="md_leader_name" class="w-full mt-1.5 p-2.5 border border-manifest-dark/10 bg-white rounded-xl focus:outline-none text-manifest-dark">
                     </div>
                     <div>
-                        <label class="block text-gray-500 font-medium">WhatsApp</label>
-                        <input type="text" name="member_whatsapp" id="md_member_wa" class="w-full mt-1 p-2 border bg-white rounded-lg">
+                        <label class="block text-manifest-dark/50 text-[10px] uppercase">WhatsApp</label>
+                        <input type="text" name="leader_whatsapp" id="md_leader_wa" class="w-full mt-1.5 p-2.5 border border-manifest-dark/10 bg-white rounded-xl focus:outline-none text-manifest-dark">
+                    </div>
+                </div>
+
+                <div class="p-5 bg-white/30 rounded-2xl border border-manifest-dark/5 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="md:col-span-2 font-bold text-manifest-rose uppercase text-[9px] tracking-widest border-b border-manifest-dark/5 pb-2">Anggota Pendamping (Member 2)</div>
+                    <div>
+                        <label class="block text-manifest-dark/50 text-[10px] uppercase">Nama Lengkap</label>
+                        <input type="text" name="member_name" id="md_member_name" class="w-full mt-1.5 p-2.5 border border-manifest-dark/10 bg-white rounded-xl focus:outline-none text-manifest-dark">
+                    </div>
+                    <div>
+                        <label class="block text-manifest-dark/50 text-[10px] uppercase">WhatsApp</label>
+                        <input type="text" name="member_whatsapp" id="md_member_wa" class="w-full mt-1.5 p-2.5 border border-manifest-dark/10 bg-white rounded-xl focus:outline-none text-manifest-dark">
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block font-bold text-gray-500 uppercase text-[10px]">Dokumen & Bukti Bayar Terunggah</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center text-[11px] font-semibold text-indigo-600">
-                        <a id="lnk_proof" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-indigo-50 border transition-all">🖼️ Bukti Bayar</a>
-                        <a id="lnk_id1" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-indigo-50 border transition-all">📄 ID Ketua</a>
-                        <a id="lnk_id2" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-indigo-50 border transition-all">📄 ID Anggota 2</a>
-                        <a id="lnk_ig" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-indigo-50 border transition-all">📄 Bukti Follow</a>
-                        <a id="lnk_feed" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-indigo-50 border transition-all">📄 Bukti Feed</a>
-                        <a id="lnk_twibbon" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-indigo-50 border transition-all">📄 Twibbon</a>
+                    <label class="block font-bold text-manifest-dark/40 uppercase text-[9px] tracking-wider">Verifikasi Berkas Pendataan Digital</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center text-[9px] font-bold uppercase tracking-widest text-manifest-rose">
+                        <a id="lnk_proof" target="_blank" class="p-3 bg-white/50 rounded-xl hover:bg-white border border-manifest-dark/5 transition-all"><i class="fa-solid fa-receipt mr-1.5"></i> Bukti Bayar</a>
+                        <a id="lnk_id1" target="_blank" class="p-3 bg-white/50 rounded-xl hover:bg-white border border-manifest-dark/5 transition-all"><i class="fa-solid fa-address-card mr-1.5"></i> ID Ketua</a>
+                        <a id="lnk_id2" target="_blank" class="p-3 bg-white/50 rounded-xl hover:bg-white border border-manifest-dark/5 transition-all"><i class="fa-solid fa-address-card mr-1.5"></i> ID Anggota</a>
+                        <a id="lnk_ig" target="_blank" class="p-3 bg-white/50 rounded-xl hover:bg-white border border-manifest-dark/5 transition-all"><i class="fa-brands fa-instagram mr-1.5"></i> Bukti Follow</a>
+                        <a id="lnk_feed" target="_blank" class="p-3 bg-white/50 rounded-xl hover:bg-white border border-manifest-dark/5 transition-all"><i class="fa-solid fa-share-nodes mr-1.5"></i> Bukti Feed</a>
+                        <a id="lnk_twibbon" target="_blank" class="p-3 bg-white/50 rounded-xl hover:bg-white border border-manifest-dark/5 transition-all"><i class="fa-solid fa-image mr-1.5"></i> Twibbon</a>
                     </div>
                 </div>
 
-                <div class="pt-4 border-t flex justify-end gap-2">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 font-medium rounded-xl hover:bg-gray-200">Tutup</button>
-                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-xs">Simpan Perubahan</button>
+                <div class="pt-4 border-t border-manifest-dark/5 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal()" class="px-6 py-3 bg-white/60 border border-manifest-dark/10 text-[9px] font-bold uppercase tracking-widest rounded-full hover:bg-white transition-all">Batal</button>
+                    <button type="submit" class="px-7 py-3 bg-manifest-dark text-white text-[9px] font-bold uppercase tracking-widest rounded-full hover:bg-manifest-burgundy transition-all shadow-md">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", loadRegistrations);
+        document.addEventListener("DOMContentLoaded", () => {
+            loadRegistrations();
+            document.getElementById('searchInput').addEventListener('input', () => {
+                currentPage = 1; // Reset to first page on search query modify
+                applyFilters();
+            });
+        });
+
+        let allData = [];
+        let filteredData = [];
+        let activeCategory = 'ALL';
+        
+        // Pagination States
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
         function loadRegistrations() {
-           fetch('../api/admin/registration.php?action=list')
-        .then(res => res.json())
-        .then(data => {
-                document.getElementById('total_teams').textContent = "Total: " + data.length + " Tim";
-                const tbody = document.getElementById('registrationTable');
-                tbody.innerHTML = '';
-                
-                if(data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-gray-400">Belum ada tim yang mendaftar.</td></tr>`;
-                    return;
-                }
+            fetch('../api/admin/registration.php?action=list')
+            .then(res => res.json())
+            .then(data => {
+                allData = data;
+                updateStatsAndMetrics(data);
+                applyFilters();
+            })
+            .catch(err => console.error("Gagal menarik entitas data manifest log:", err));
+        }
 
-                data.forEach(row => {
-                    // Badge warna dinamis berdasarkan tipe lomba
-                    let badgeClass = row.competition_type === 'EBPC' ? 'bg-purple-50 text-purple-700 border-purple-100' : 'bg-indigo-50 text-indigo-700 border-indigo-100';
-                    
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-gray-50/50 transition-all border-b border-gray-50">
-                            <td class="py-4 px-6"><span class="px-2 py-0.5 border rounded-md text-[10px] font-black ${badgeClass}">${row.competition_type}</span></td>
-                            <td class="py-4 px-6 font-bold text-gray-900">${row.team_name}</td>
-                            <td class="py-4 px-6">${row.leader_name}</td>
-                            <td class="py-4 px-6 font-bold text-gray-900">Rp ${parseInt(row.final_amount).toLocaleString('id-ID')}</td>
-                            <td class="py-4 px-6 text-right">
-                                <button onclick="openDetail(${row.id})" class="text-indigo-600 font-bold bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-100 cursor-pointer">Review & Edit</button>
-                            </td>
-                        </tr>
-                    `;
-                });
+        function updateStatsAndMetrics(data) {
+            let totalRevenue = 0;
+            
+            document.getElementById('side_total').textContent = data.length;
+            document.getElementById('side_bpc').textContent = data.filter(r => r.competition_type === 'BPC').length;
+            document.getElementById('side_bcc').textContent = data.filter(r => r.competition_type === 'BCC').length;
+            document.getElementById('side_ebpc').textContent = data.filter(r => r.competition_type === 'EBPC').length;
+
+            data.forEach(item => { totalRevenue += parseInt(item.final_amount || 0); });
+            document.getElementById('stat_revenue').textContent = "Rp " + totalRevenue.toLocaleString('id-ID');
+        }
+
+        function applyFilters() {
+            const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredData = allData.filter(item => {
+                const matchesCategory = (activeCategory === 'ALL' || item.competition_type === activeCategory);
+                const matchesSearch = item.team_name.toLowerCase().includes(searchKeyword) || 
+                                      item.leader_name.toLowerCase().includes(searchKeyword) ||
+                                      (item.payment_method && item.payment_method.toLowerCase().includes(searchKeyword));
+                return matchesCategory && matchesSearch;
             });
+            
+            renderGridWithPagination();
+        }
+
+        function renderGridWithPagination() {
+            const tbody = document.getElementById('registrationTable');
+            tbody.innerHTML = '';
+            
+            const totalItems = filteredData.length;
+            const totalPages = Math.ceil(totalItems / rowsPerPage) || 1;
+            
+            // Adjust current page bounds if needed
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, totalItems);
+            
+            // Slice the filtered data bucket for active page segmentation
+            const pageData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+
+            if(pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-24 text-manifest-dark/30 font-accent italic text-lg">No matches found in the symphony registry.</td></tr>`;
+                document.getElementById('paginationInfo').textContent = "Showing 0 to 0 of 0 teams";
+                document.getElementById('paginationControls').innerHTML = '';
+                return;
+            }
+
+            pageData.forEach(row => {
+                let badgeClass = '';
+                if(row.competition_type === 'EBPC') badgeClass = 'bg-manifest-forest text-white';
+                else if(row.competition_type === 'BCC') badgeClass = 'bg-manifest-burgundy text-white';
+                else badgeClass = 'bg-manifest-rose text-white';
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-white/40 transition-all border-b border-manifest-dark/[0.02]">
+                        <td class="py-4 px-8"><span class="px-2.5 py-0.5 text-[8px] font-bold tracking-widest rounded-md uppercase ${badgeClass}">${row.competition_type}</span></td>
+                        <td class="py-4 px-6 font-bold text-manifest-dark text-xs">${row.team_name}</td>
+                        <td class="py-4 px-6 text-manifest-dark/60 text-xs">${row.leader_name}</td>
+                        <td class="py-4 px-6 font-bold text-manifest-dark text-xs">Rp ${parseInt(row.final_amount).toLocaleString('id-ID')}</td>
+                        <td class="py-4 px-8 text-right">
+                            <button onclick="openDetail(${row.id})" class="text-manifest-dark text-[9px] tracking-widest font-bold uppercase bg-white hover:bg-white/40 border border-manifest-dark/10 px-4 py-2 rounded-full transition-all cursor-pointer">
+                                <i class="fa-solid fa-folder-open mr-1"></i> Audit
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Update bottom info strings
+            document.getElementById('paginationInfo').textContent = `Showing ${startIndex + 1} to ${endIndex} of ${totalItems} teams`;
+            renderPaginationControls(totalPages);
+        }
+
+        function renderPaginationControls(totalPages) {
+            const container = document.getElementById('paginationControls');
+            container.innerHTML = '';
+
+            // Previous Button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = `px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all ${currentPage === 1 ? 'border-manifest-dark/5 text-manifest-dark/20 cursor-not-allowed bg-transparent' : 'border-manifest-dark/10 hover:bg-white bg-white/60'}`;
+            prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+            prevBtn.disabled = (currentPage === 1);
+            prevBtn.onclick = () => { currentPage--; renderGridWithPagination(); };
+            container.appendChild(prevBtn);
+
+            // Numeric Page Links Dynamic Generation
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${currentPage === i ? 'bg-manifest-dark text-white border-manifest-dark' : 'border-manifest-dark/10 bg-white/60 hover:bg-white text-manifest-dark'}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => { currentPage = i; renderGridWithPagination(); };
+                container.appendChild(pageBtn);
+            }
+
+            // Next Button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = `px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all ${currentPage === totalPages ? 'border-manifest-dark/5 text-manifest-dark/20 cursor-not-allowed bg-transparent' : 'border-manifest-dark/10 hover:bg-white bg-white/60'}`;
+            nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+            nextBtn.disabled = (currentPage === totalPages);
+            nextBtn.onclick = () => { currentPage++; renderGridWithPagination(); };
+            container.appendChild(nextBtn);
+        }
+
+        function filterCategory(category) {
+            activeCategory = category;
+            currentPage = 1; // Reset tracking viewport coordinates back to original head node
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.getAttribute('data-cate') === category) {
+                    btn.classList.remove('bg-white/60', 'text-manifest-dark', 'border');
+                    btn.classList.add('bg-manifest-dark', 'text-white');
+                } else {
+                    btn.classList.remove('bg-manifest-dark', 'text-white');
+                    btn.classList.add('bg-white/60', 'text-manifest-dark', 'border', 'border-manifest-dark/5');
+                }
+            });
+            applyFilters();
         }
 
         function openDetail(id) {
@@ -162,7 +397,6 @@
                 document.getElementById('md_member_name').value = data.member_name;
                 document.getElementById('md_member_wa').value = data.member_whatsapp;
 
-                // Atur link file uploads secara dinamis (mengarah ke direktori uploads sistem)
                 const baseUrl = "../../uploads/";
                 document.getElementById('lnk_proof').href = baseUrl + data.payment_proof;
                 document.getElementById('lnk_id1').href = baseUrl + data.leader_id_scan;
@@ -179,21 +413,36 @@
             document.getElementById('detailModal').classList.add('hidden');
         }
 
-        // Submit form edit update data tim
+        function exportTableToCSV(filename) {
+            let csv = [];
+            csv.push("ID,Kategori,Nama Tim,Nama Ketua,Nominal,Tanggal");
+            
+            allData.forEach(row => {
+                csv.push([row.id, row.competition_type, row.team_name, row.leader_name, row.final_amount, row.created_at].join(","));
+            });
+
+            let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+            let link = document.createElement("a");
+            link.download = filename;
+            link.href = window.URL.createObjectURL(csvFile);
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         document.getElementById('editRegForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-
-            fetch('../api/admin/registrations.php?action=update', {
+            fetch('../api/admin/registration.php?action=update', {
                 method: 'POST',
-                body: formData
+                body: new FormData(this)
             })
             .then(res => res.json())
             .then(data => {
                 alert(data.message);
                 if (data.status === 'success') {
                     closeModal();
-                    loadRegistrations(); // Refresh list data tabel
+                    loadRegistrations(); 
                 }
             });
         });
