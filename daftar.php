@@ -153,7 +153,6 @@
 
     <div class="gsm-texture"></div>
 
-    <!-- === LOADING CURTAIN === -->
     <div class="curtain-container" id="curtain">
         <div class="curtain-panel curtain-left"></div>
         <div class="curtain-panel curtain-right"></div>
@@ -167,14 +166,12 @@
         </div>
     </div>
 
-    <!-- === BACKGROUND ORNAMENT === -->
     <div class="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-b from-[#500707]/5 to-transparent pointer-events-none -z-10"></div>
     <div class="music-staff opacity-20"></div>
 
     <div class="absolute top-[-10%] right-0 w-[50vw] max-w-[600px] h-[600px] bg-manifest-rose/[0.03] rounded-full blur-[140px] pointer-events-none -z-10"></div>
     <div class="absolute bottom-0 left-0 w-[40vw] h-[40vw] bg-manifest-cream/[0.1] rounded-full blur-[120px] pointer-events-none -z-10"></div>
 
-    <!-- === TOAST NOTIFICATION === -->
     <div id="customToast" class="fixed top-24 right-4 md:right-12 z-[10000] pointer-events-none opacity-0 -translate-y-8 w-[calc(100%-2rem)] sm:w-auto sm:max-w-md">
         <div class="bg-white/95 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-xl border border-manifest-dark/10 flex items-center gap-3.5">
             <div id="toastIcon" class="w-5 h-5 shrink-0 flex items-center justify-center rounded-full"></div>
@@ -182,7 +179,6 @@
         </div>
     </div>
 
-    <!-- === MOBILE SIDEBAR === -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-manifest-dark/40 backdrop-blur-sm z-[999] opacity-0 pointer-events-none transition-opacity duration-300"></div>
     <div id="mobileSidebar" class="fixed inset-y-0 right-0 w-[85%] sm:w-[400px] bg-cream z-[1000] transform translate-x-full p-8 pt-12 flex flex-col justify-between shadow-[-10px_0_40px_rgba(34,7,1,0.15)] border-l border-white/50 transition-transform duration-300">
         <div class="flex items-center justify-between w-full mb-8 border-b border-manifest-dark/5 pb-4">
@@ -217,7 +213,6 @@
         </div>
     </div>
 
-    <!-- === PREMIUM DESKTOP / MOBILE NAVBAR === -->
     <header class="fixed w-full top-5 z-[50] px-4 md:px-12 transition-all duration-500" id="navbar">
         <div id="navInner" class="max-w-[1340px] mx-auto nav-daftar-style backdrop-blur-2xl rounded-full px-6 md:px-8 py-3 flex justify-between items-center transition-all duration-500">
             <a href="index.html" class="font-heading text-xl md:text-2xl font-bold flex items-center gap-1 text-ink tracking-tighter group">
@@ -255,7 +250,6 @@
         </div>
     </header>
 
-    <!-- === MAIN CONTAINER === -->
     <main class="w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 pt-32 md:pt-40 flex-1 flex flex-col justify-center relative z-10">
         
         <div class="text-center mb-8 md:mb-12">
@@ -263,7 +257,6 @@
             <p class="font-script italic text-xl md:text-3xl text-manifest-burgundy/80 mt-2">The Symphony of Business</p>
         </div>
 
-        <!-- PROGRESS BAR -->
         <div class="flex items-center justify-between mb-8 md:mb-14 px-2 max-w-md mx-auto w-full">
             <div class="flex items-center gap-2 sm:gap-3">
                 <div id="dot-1" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-manifest-dark text-white text-xs font-heading font-bold flex items-center justify-center transition-all border border-manifest-dark/10 shadow-sm">1</div>
@@ -283,7 +276,6 @@
 
         <form id="upgradeRegForm" enctype="multipart/form-data" class="space-y-6 sm:space-y-8">
             
-            <!-- STEP 0 -->
             <div id="step-0" class="step-content active space-y-4 sm:space-y-6">
                 <h3 class="font-heading text-[10px] font-bold uppercase tracking-widest text-ink/40 text-center mb-4">Silakan Pilih Cabang Kompetisi:</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -308,7 +300,6 @@
                 </div>
             </div>
 
-            <!-- STEP 1 -->
             <div id="step-1" class="step-content space-y-4 sm:space-y-6">
                 <div class="manifest-soft-card p-4 sm:p-6 rounded-2xl">
                     <label class="block text-[9px] font-heading font-bold uppercase text-ink/50 tracking-widest">Nama Tim</label>
@@ -363,7 +354,6 @@
                 </div>
             </div>
 
-            <!-- STEP 2 -->
             <div id="step-2" class="step-content space-y-4 sm:space-y-6">
                 <div class="manifest-soft-card p-4 sm:p-6 rounded-2xl space-y-4 sm:space-y-5">
                     <div>
@@ -418,7 +408,6 @@
                 </div>
             </div>
 
-            <!-- STEP 3 -->
             <div id="step-3" class="step-content space-y-4 sm:space-y-6">
                 <div class="p-4 bg-manifest-burgundy/5 border border-manifest-burgundy/10 rounded-2xl text-manifest-burgundy text-[11px] font-medium leading-relaxed flex items-start gap-2.5">
                     <i class="fas fa-exclamation-triangle mt-0.5 shrink-0"></i>
@@ -426,7 +415,6 @@
                 </div>
 
                 <div class="space-y-3">
-                    <!-- Dinamis Surat Pernyataan Orisinalitas (Hanya BPC & EBPC) -->
                     <div id="wrapper_originality_file" class="flex items-center justify-between p-4 manifest-soft-card rounded-2xl gap-3 transition-all">
                         <div class="max-w-[60%] sm:max-w-[75%]">
                             <span class="text-xs font-bold text-ink block">Surat Pernyataan Orisinalitas Lomba</span>
@@ -595,19 +583,81 @@
             }, 4000);
         }
 
+        // === FUNGSI VERIFIKASI REFERRAL / PROMO ===
+        // === FUNGSI VERIFIKASI REFERRAL / PROMO ===
+        function verifyReferral() {
+            const promoCode = document.getElementById('ref_field').value.trim();
+            const messageEl = document.getElementById('ref_message');
+            const displayAmountEl = document.getElementById('display_amount');
+
+            if (!promoCode) {
+                showToast("Masukkan kode promo/referral terlebih dahulu!");
+                return;
+            }
+
+            messageEl.textContent = "Memverifikasi...";
+            messageEl.className = "text-[11px] font-bold mt-1 text-ink/60";
+
+            const promoData = new FormData();
+            promoData.append('referral_code', promoCode);
+
+            // Gunakan './' di depan agar browser strict mencari folder 'api' di tempat daftar.php berada
+            fetch('./api/user/check_promo.php', {
+                method: 'POST',
+                body: promoData
+            })
+            .then(res => {
+                // Proteksi jika server mengembalikan status eror (seperti 404 atau 500)
+                if (!res.ok) {
+                    throw new Error("Server merespon dengan status " + res.status);
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    let basePrice = (selectedCompType === 'BCC') ? 150000 : 75000;
+                    let discountAmount = (data.discount / 100) * basePrice;
+                    let finalAmount = basePrice - discountAmount;
+
+                    displayAmountEl.textContent = "Rp " + finalAmount.toLocaleString('id-ID');
+                    
+                    showToast(data.message || "Kode referral berhasil diterapkan!", "success");
+                    messageEl.textContent = `✓ Kode diterapkan (Diskon ${data.discount}%)`;
+                    messageEl.className = "text-[11px] font-bold mt-1 text-manifest-rose";
+                } else {
+                    showToast(data.message || "Kode referral tidak valid.");
+                    messageEl.textContent = "✕ " + (data.message || "Kode tidak valid.");
+                    messageEl.className = "text-[11px] font-bold mt-1 text-manifest-burgundy";
+                    
+                    let basePrice = (selectedCompType === 'BCC') ? 150000 : 75000;
+                    displayAmountEl.textContent = "Rp " + basePrice.toLocaleString('id-ID');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("Gagal memuat file API. Pastikan file check_promo.php ada di folder api/user/.");
+                messageEl.textContent = "✕ Gagal verifikasi (Eror 404/Rute Salah).";
+                messageEl.className = "text-[11px] font-bold mt-1 text-manifest-burgundy";
+            });
+        }
+
         function selectCompetition(type) {
             selectedCompType = type;
             document.getElementById('main-title').textContent = "Pendaftaran Lomba — " + type;
             const radioInput = document.querySelector(`input[name="competition_type"][value="${type}"]`);
             if (radioInput) radioInput.checked = true;
 
+            // Reset status input promo agar kalkulasi harga tidak bug saat berganti kategori
+            document.getElementById('ref_field').value = "";
+            document.getElementById('ref_message').textContent = "";
+
             const originalityWrapper = document.getElementById('wrapper_originality_file');
             if (type === 'BCC') {
                 originalityWrapper.classList.add('hidden');
-                document.getElementById('display_amount').textContent = "Rp 150.000"; // Contoh penyesuaian nominal BCC
+                document.getElementById('display_amount').textContent = "Rp 150.000"; 
             } else {
                 originalityWrapper.classList.remove('hidden');
-                document.getElementById('display_amount').textContent = "Rp 75.000"; // Harga normal BPC & EBPC
+                document.getElementById('display_amount').textContent = "Rp 75.000"; 
             }
             goToStep(1);
         }
@@ -671,6 +721,14 @@
             if (input.files.length > 0) {
                 labelSpan.textContent = "✔ " + input.files[0].name;
                 labelSpan.className = "text-[11px] text-manifest-rose font-bold block truncate pointer-events-none";
+            }
+        }
+
+        function updateInlineFileName(input) {
+            const container = input.closest('div');
+            const labelSpan = container.querySelector('.file-name-display');
+            if (input.files.length > 0 && labelSpan) {
+                labelSpan.textContent = "✔ " + input.files[0].name;
             }
         }
 

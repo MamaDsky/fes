@@ -13,30 +13,17 @@ if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Koneksi database gagal: " . $conn->connect_error]));
 }
 
+// Fungsi base_url yang aman dan tidak merusak segmentasi AJAX API
 function base_url() {
-    // 1. Deteksi protokol (http atau https)
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-    
-    // 2. Ambil nama host / domain (misal: localhost atau domainanda.com)
     $host = $_SERVER['HTTP_HOST'];
     
-    // 3. Ambil request URI bersih tanpa query string (?action=detail dst)
-    $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
+    // Cara paling aman: Cukup ambil nama subfolder proyek secara langsung dari script name pembuka
+    $project_path = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
     
-    // 4. Pecah URL berdasarkan tanda '/' untuk membuang folder internal backend
-    $segments = explode('/', $request_uri);
-    $clean_segments = [];
+    // Jika diakses dari dalam folder api/user/ atau admin/, bersihkan path-nya agar kembali ke root proyek
+    $project_path = preg_replace('/(api\/user\/|api\/admin\/|admin\/|config\/)$/', '', $project_path);
     
-    foreach ($segments as $segment) {
-        // Jika menemukan folder 'api' atau 'admin', hentikan pembacaan ke kanan
-        if ($segment === 'api' || $segment === 'admin') {
-            break;
-        }
-        $clean_segments[] = $segment;
-    }
-    
-    // 5. Satukan kembali menjadi URL utama proyek (pasti menghasilkan http://localhost/fes-1f4b575b71f2.../)
-    $path = implode('/', $clean_segments);
-    return $protocol . $host . rtrim($path, '/') . '/';
+    return $protocol . $host . rtrim($project_path, '/') . '/';
 }
 ?>
