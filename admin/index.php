@@ -90,10 +90,13 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             </nav>
         </div>
 
-        <div class="p-6 border-t border-manifest-dark/5">
+        <div class="p-6 border-t border-manifest-dark/5 flex flex-col gap-2">
             <button onclick="exportTableToCSV('manifest-pendaftar-2026.csv')" class="w-full bg-white hover:bg-white/60 text-manifest-dark border border-manifest-dark/10 text-[9px] font-bold uppercase tracking-widest py-3 rounded-xl transition-all flex items-center justify-center gap-2">
                 <i class="fa-solid fa-file-csv text-xs"></i> Export CSV Data
             </button>
+            <a href="logout.php" class="w-full bg-red-100 hover:bg-red-200 text-red-700 text-[9px] font-bold uppercase tracking-widest py-3 rounded-xl transition-all flex items-center justify-center gap-2 border border-red-200/50">
+                <i class="fa-solid fa-right-from-bracket text-xs"></i> Log Out
+            </a>
         </div>
     </aside>
 
@@ -242,25 +245,22 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     </div>
 
     <script>
-
-
-// Tambahkan fungsi ini di bagian paling atas tag <script> kamu
-function escapeHTML(string) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return String(string).replace(/[&<>"']/g, function(m) { return map[m]; });
-}
-
+        // Fungsi escape HTML demi mencegah serangan XSS melalui manipulasi input teks basis data
+        function escapeHTML(string) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(string).replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             loadRegistrations();
             document.getElementById('searchInput').addEventListener('input', () => {
-                currentPage = 1; // Reset to first page on search query modify
+                currentPage = 1; // Reset ke halaman pertama jika filter pencarian berubah
                 applyFilters();
             });
         });
@@ -269,7 +269,7 @@ function escapeHTML(string) {
         let filteredData = [];
         let activeCategory = 'ALL';
         
-        // Pagination States
+        // Aturan Pagination Dasbor
         let currentPage = 1;
         const rowsPerPage = 10;
 
@@ -317,14 +317,12 @@ function escapeHTML(string) {
             const totalItems = filteredData.length;
             const totalPages = Math.ceil(totalItems / rowsPerPage) || 1;
             
-            // Adjust current page bounds if needed
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
 
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = Math.min(startIndex + rowsPerPage, totalItems);
             
-            // Slice the filtered data bucket for active page segmentation
             const pageData = filteredData.slice(startIndex, startIndex + rowsPerPage);
 
             if(pageData.length === 0) {
@@ -355,7 +353,6 @@ function escapeHTML(string) {
                 `;
             });
 
-            // Update bottom info strings
             document.getElementById('paginationInfo').textContent = `Showing ${startIndex + 1} to ${endIndex} of ${totalItems} teams`;
             renderPaginationControls(totalPages);
         }
@@ -364,7 +361,6 @@ function escapeHTML(string) {
             const container = document.getElementById('paginationControls');
             container.innerHTML = '';
 
-            // Previous Button
             const prevBtn = document.createElement('button');
             prevBtn.className = `px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all ${currentPage === 1 ? 'border-manifest-dark/5 text-manifest-dark/20 cursor-not-allowed bg-transparent' : 'border-manifest-dark/10 hover:bg-white bg-white/60'}`;
             prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
@@ -372,7 +368,6 @@ function escapeHTML(string) {
             prevBtn.onclick = () => { currentPage--; renderGridWithPagination(); };
             container.appendChild(prevBtn);
 
-            // Numeric Page Links Dynamic Generation
             for (let i = 1; i <= totalPages; i++) {
                 const pageBtn = document.createElement('button');
                 pageBtn.className = `px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${currentPage === i ? 'bg-manifest-dark text-white border-manifest-dark' : 'border-manifest-dark/10 bg-white/60 hover:bg-white text-manifest-dark'}`;
@@ -381,7 +376,6 @@ function escapeHTML(string) {
                 container.appendChild(pageBtn);
             }
 
-            // Next Button
             const nextBtn = document.createElement('button');
             nextBtn.className = `px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all ${currentPage === totalPages ? 'border-manifest-dark/5 text-manifest-dark/20 cursor-not-allowed bg-transparent' : 'border-manifest-dark/10 hover:bg-white bg-white/60'}`;
             nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
@@ -392,7 +386,7 @@ function escapeHTML(string) {
 
         function filterCategory(category) {
             activeCategory = category;
-            currentPage = 1; // Reset tracking viewport coordinates back to original head node
+            currentPage = 1;
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 if(btn.getAttribute('data-cate') === category) {
                     btn.classList.remove('bg-white/60', 'text-manifest-dark', 'border');
@@ -420,13 +414,20 @@ function escapeHTML(string) {
                 document.getElementById('md_member_name').value = data.member_name;
                 document.getElementById('md_member_wa').value = data.member_whatsapp;
 
-                const baseUrl = "../../uploads/";
-                document.getElementById('lnk_proof').href = baseUrl + data.payment_proof;
-                document.getElementById('lnk_id1').href = baseUrl + data.leader_id_scan;
-                document.getElementById('lnk_id2').href = baseUrl + data.member_id_scan;
-                document.getElementById('lnk_ig').href = baseUrl + data.proof_follow_ig;
-                document.getElementById('lnk_feed').href = baseUrl + data.proof_repost_feed;
-                document.getElementById('lnk_twibbon').href = baseUrl + data.proof_twibbon;
+                // PENYESUAIAN AMAN: Mengambil URL berkas langsung dari property khusus dinamis berakhiran '_url' dari API
+                document.getElementById('lnk_proof').href   = data.payment_proof_url;
+                document.getElementById('lnk_id1').href     = data.leader_id_scan_url;
+                document.getElementById('lnk_id2').href     = data.member_id_scan_url;
+                document.getElementById('lnk_ig').href      = data.proof_follow_ig_url;
+                document.getElementById('lnk_feed').href    = data.proof_repost_feed_url;
+                document.getElementById('lnk_twibbon').href = data.proof_twibbon_url;
+
+                // TAMBAHAN FORCE DOWNLOAD: Atribut khusus berkas dokumen PDF pendaftar agar diunduh secara tepat oleh browser
+                document.getElementById('lnk_id1').setAttribute('download', data.leader_id_scan);
+                document.getElementById('lnk_id2').setAttribute('download', data.member_id_scan);
+                document.getElementById('lnk_ig').setAttribute('download', data.proof_follow_ig);
+                document.getElementById('lnk_feed').setAttribute('download', data.proof_repost_feed);
+                document.getElementById('lnk_twibbon').setAttribute('download', data.proof_twibbon);
 
                 document.getElementById('detailModal').classList.remove('hidden');
             });

@@ -1,15 +1,21 @@
 <?php
-session_start();
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access. Please login first.']);
-    exit;
-}
+// Sembunyikan error kasar dari publik demi keamanan informasi server
+error_reporting(0);
+ini_set('display_errors', 0);
+
 header("Content-Type: application/json");
 require_once '../../config/database.php';
 
+// 1. PROTEKSI UTAMA: Validasi Session Login Admin (Anti-Bypass Eksternal)
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    echo json_encode(["status" => "error", "message" => "Akses ditolak! Silakan login terlebih dahulu."]);
+    exit;
+}
+
 $action = $_GET['action'] ?? '';
 
-// 1. Ambil Semua Data Pendaftar (BPC, BCC, EBPC)
+// 2. Ambil List Semua Data Pendaftar (BPC, BCC, EBPC)
 if ($action === 'list') {
     $result = $conn->query("SELECT id, competition_type, team_name, leader_name, final_amount, payment_method, created_at FROM registrations ORDER BY id DESC");
     $list = [];
@@ -20,7 +26,7 @@ if ($action === 'list') {
     exit;
 }
 
-// 2. Ambil Detail Lengkap Satu Tim berdasarkan ID
+// 3. Ambil Detail Lengkap Satu Tim berdasarkan ID + Inject URL Berkas Dinamis
 if ($action === 'detail') {
     $id = intval($_GET['id'] ?? 0);
     $stmt = $conn->prepare("SELECT * FROM registrations WHERE id = ?");
@@ -29,7 +35,20 @@ if ($action === 'detail') {
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
-        echo json_encode($result->fetch_assoc());
+        $data = $result->fetch_assoc();
+        
+        // ---- DINAMIS URL GENERATOR FOR HOSTING & LOCALHOST ----
+        // Menggunakan fungsi base_url() otomatis dari config/database.php
+        $baseUrl = base_url() . "uploads/";
+        
+        $data['leader_id_scan_url']    = $baseUrl . $data['leader_id_scan'];
+        $data['member_id_scan_url']    = $baseUrl . $data['member_id_scan'];
+        $data['payment_proof_url']     = $baseUrl . $data['payment_proof'];
+        $data['proof_follow_ig_url']   = $baseUrl . $data['proof_follow_ig'];
+        $data['proof_repost_feed_url'] = $baseUrl . $data['proof_repost_feed'];
+        $data['proof_twibbon_url']     = $baseUrl . $data['proof_twibbon'];
+        
+        echo json_encode($data);
     } else {
         echo json_encode(["status" => "error", "message" => "Data tidak ditemukan."]);
     }
@@ -37,7 +56,7 @@ if ($action === 'detail') {
     exit;
 }
 
-// 3. Edit / Update Data & Status Verifikasi Pendaftar
+// 4. Edit / Update Data Pendaftar dari Modal Audit Dasbor
 if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id               = intval($_POST['id'] ?? 0);
     $team_name        = htmlspecialchars(strip_tags(trim($_POST['team_name'] ?? '')));
