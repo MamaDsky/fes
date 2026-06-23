@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANIFEST ITS — Smart Chatbox</title>
+    <style>
+        :root {
+            --maroon: #800000;
+            --maroon-dark: #570000;
+            --maroon-soft: #f6e8e8;
+            --ink: #2a2020;
+            --muted: #7b6b6b;
+            --line: #eee3e3;
+            --paper: #fffdfd;
+            --shadow: 0 22px 50px rgba(59, 11, 11, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f4f1f1;
+            min-height: 100vh;
+        }
+
+        button,
+        textarea {
+            font: inherit;
+        }
+
+        /* Floating trigger */
+        #chat-circle {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            width: 62px;
+            height: 62px;
+            border: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(145deg, #990b0b, var(--maroon));
+            box-shadow: 0 10px 25px rgba(128, 0, 0, 0.35);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform .25s ease, background .25s ease;
+        }
+
+        #chat-circle::after {
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border: 1px solid rgba(128, 0, 0, .25);
+            border-radius: inherit;
+            animation: pulseRing 2.3s infinite;
+        }
+
+        #chat-circle:hover {
+            background: var(--maroon-dark);
+            transform: translateY(-3px) scale(1.04);
+        }
+
+        #chat-circle svg {
+            width: 29px;
+            height: 29px;
+            fill: currentColor;
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(.98); opacity: .8; }
+            50% { transform: scale(1.13); opacity: 0; }
+        }
+
+        /* Chat container */
+        .chat-box {
+            position: fixed;
+            right: 22px;
+            bottom: 100px;
+            width: min(390px, calc(100vw - 44px));
+            height: min(620px, calc(100dvh - 122px));
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            background: var(--paper);
+            border: 1px solid rgba(128, 0, 0, .1);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(24px) scale(.97);
+            transition: opacity .28s ease, transform .28s ease;
+            z-index: 1000;
+        }
+
+        .chat-box.show {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .chat-box-header {
+            padding: 16px 16px 15px;
+            color: #fff;
+            background:
+                radial-gradient(circle at 14% 10%, rgba(255,255,255,.22), transparent 24%),
+                linear-gradient(135deg, #9d0f0f, var(--maroon-dark));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bot-brand {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .bot-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: rgba(255,255,255,.18);
+            border: 1px solid rgba(255,255,255,.24);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .bot-brand-text {
+            min-width: 0;
+        }
+
+        .bot-brand-text strong {
+            display: block;
+            font-size: .96rem;
+            letter-spacing: .01em;
+        }
+
+        .bot-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+            color: rgba(255,255,255,.8);
+            font-size: .72rem;
+        }
+
+        .bot-status::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #b7ff91;
+            box-shadow: 0 0 0 3px rgba(183,255,145,.16);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .icon-button {
+            width: 30px;
+            height: 30px;
+            border: 0;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1.15rem;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .icon-button:hover {
+            background: rgba(255,255,255,.16);
+            transform: scale(1.06);
+        }
+
+        /* Conversation */
+        .chat-box-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 16px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background:
+                linear-gradient(rgba(255,253,253,.95), rgba(255,253,253,.95)),
+                radial-gradient(circle at 12% 4%, rgba(128,0,0,.06), transparent 27%);
+            scrollbar-width: thin;
+            scrollbar-color: #d9b8b8 transparent;
+        }
+
+        .message-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 7px;
+            animation: messageIn .28s ease both;
+        }
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+        .message-avatar {
+            width: 27px;
+            height: 27px;
+            flex: 0 0 27px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            color: #fff;
+            background: var(--maroon);
+            font-size: .68rem;
+            font-weight: 800;
+        }
+
+        .message {
+            max-width: 82%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: .87rem;
+            line-height: 1.48;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+
+        .message.bot {
+            color: var(--ink);
+            background: var(--maroon-soft);
+            border: 1px solid #efd7d7;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            color: #fff;
+            background: linear-gradient(135deg, #930909, var(--maroon));
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 10px rgba(128,0,0,.12);
+        }
+
+        .message small {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: .72rem;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-bubble {
+            width: fit-content;
+            min-width: 58px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+            background: var(--maroon-soft);
+            border: 1px solid #efd7d7;
+        }
+
+        .typing-bubble span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--maroon);
+            opacity: .45;
+            animation: typing 1s infinite ease-in-out;
+        }
+
+        .typing-bubble span:nth-child(2) { animation-delay: .15s; }
+        .typing-bubble span:nth-child(3) { animation-delay: .3s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); opacity: .35; }
+            50% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        /* Quick replies */
+        .quick-replies-wrap {
+            padding: 3px 14px 11px;
+            background: var(--paper);
+        }
+
+        .quick-replies-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #9a8181;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .quick-replies {
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            padding-bottom: 1px;
+            scrollbar-width: none;
+        }
+
+        .quick-replies::-webkit-scrollbar { display: none; }
+
+        .quick-reply {
+            flex: 0 0 auto;
+            padding: 7px 10px;
+            border: 1px solid #e7caca;
+            border-radius: 999px;
+            color: var(--maroon);
+            background: #fffafa;
+            font-size: .73rem;
+            font-weight: 650;
+            cursor: pointer;
+            transition: color .2s ease, background .2s ease, transform .2s ease;
+        }
+
+        .quick-reply:hover {
+            color: #fff;
+            background: var(--maroon);
+            transform: translateY(-1px);
+        }
+
+        /* Composer */
+        .chat-input-area {
+            padding: 11px 12px;
+            display: flex;
+            align-items: flex-end;
+            gap: 9px;
+            border-top: 1px solid var(--line);
+            background: #fff;
+        }
+
+        #chat-input {
+            width: 100%;
+            min-height: 42px;
+            max-height: 94px;
+            resize: none;
+            padding: 10px 12px;
+            border: 1px solid #e6d8d8;
+            border-radius: 13px;
+            outline: none;
+            color: var(--ink);
+            background: #fffcfc;
+            font-size: .86rem;
+            line-height: 1.4;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        #chat-input::placeholder { color: #ac9d9d; }
+
+        #chat-input:focus {
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 3px rgba(128,0,0,.08);
+        }
+
+        #chat-submit {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            border: 0;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: var(--maroon);
+            cursor: pointer;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        #chat-submit:hover {
+            background: var(--maroon-dark);
+            transform: translateY(-1px);
+        }
+
+        #chat-submit:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #chat-submit svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .chat-hint {
+            padding: 0 14px 10px;
+            color: #a89494;
+            background: #fff;
+            font-size: .67rem;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            #chat-circle {
+                right: 16px;
+                bottom: 16px;
+                width: 58px;
+                height: 58px;
+            }
+
+            .chat-box {
+                right: 12px;
+                bottom: 86px;
+                width: calc(100vw - 24px);
+                height: min(650px, calc(100dvh - 102px));
+                border-radius: 19px;
+            }
+
+            .message { max-width: 86%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tombol mengambang -->
+    <button id="chat-circle" type="button" aria-label="Buka Asisten MANIFEST" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.131 2 11.22c0 2.872 1.442 5.438 3.7 7.172l-.7 2.61a.75.75 0 0 0 1.077.844l3.197-1.68c.84.183 1.722.28 2.726.28 5.523 0 10-4.131 10-9.22C22 6.131 17.523 2 12 2z"/>
+        </svg>
+    </button>
+
+    <!-- Chatbox -->
+    <section class="chat-box" id="chatBox" aria-label="Asisten MANIFEST ITS" aria-live="polite">
+        <header class="chat-box-header">
+            <div class="bot-brand">
+                <div class="bot-logo">M</div>
+                <div class="bot-brand-text">
+                    <strong>Asisten MANIFEST</strong>
+                    <span class="bot-status">Online · siap membantu</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-button" id="clearChat" type="button" aria-label="Hapus riwayat chat" title="Hapus riwayat">↺</button>
+                <button class="icon-button" id="chatClose" type="button" aria-label="Tutup chat" title="Tutup chat">×</button>
+            </div>
+        </header>
+
+        <main class="chat-box-body" id="chatBody" aria-label="Percakapan"></main>
+
+        <div class="quick-replies-wrap">
+            <span class="quick-replies-label">Pertanyaan cepat</span>
+            <div class="quick-replies" id="quickReplies"></div>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea id="chat-input" rows="1" placeholder="Tulis pertanyaanmu..." autocomplete="off" aria-label="Tulis pertanyaan"></textarea>
+            <button id="chat-submit" type="button" aria-label="Kirim pesan" title="Kirim pesan">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.478 2.405a.75.75 0 0 1 .814-.12l16.5 8.25a.75.75 0 0 1 0 1.342l-16.5 8.25A.75.75 0 0 1 3.22 19.4l2.06-6.73H12a.75.75 0 0 0 0-1.5H5.28L3.22 4.44a.75.75 0 0 1 .258-2.035Z"/></svg>
+            </button>
+        </div>
+        <p class="chat-hint">Tekan Enter untuk mengirim · Shift + Enter untuk baris baru</p>
+    </section>
+
+    <script>
+        /*
+         * SMART CHATBOX MANIFEST ITS
+         * ------------------------------------------------------------------------
+         * Bagian paling penting untuk diubah: EVENT_INFO di bawah ini.
+         * Isi data resmi acara di sana agar jawaban chatbot makin spesifik.
+         * Chatbot tetap berjalan tanpa API dan tidak menyimpan data ke server.
+         */
+        const EVENT_INFO = {
+            name: 'MANIFEST ITS',
+            eventType: 'Business Plan Competition',
+            description: 'kompetisi yang menjadi ruang bagi mahasiswa untuk mengembangkan ide bisnis yang relevan, terukur, dan berdampak.',
+            registrationText: 'Pendaftaran dilakukan melalui halaman Registration pada website. Pastikan data ketua tim, anggota, dan dokumen yang diminta sudah lengkap sebelum dikirim.',
+            timelineText: 'Timeline terbaru dapat dilihat pada halaman Timeline atau di guidebook resmi agar kamu tidak melewatkan batas pendaftaran dan pengumpulan berkas.',
+            feeText: 'Rincian biaya pendaftaran tercantum pada bagian Registration / Guidebook resmi. Pastikan kamu melihat informasi terbaru sebelum melakukan pembayaran.',
+            teamText: 'Ketentuan jumlah anggota, peran ketua tim, dan syarat peserta tercantum di guidebook resmi. Gunakan aturan terbaru dari panitia sebagai acuan.',
+            guidebookText: 'Guidebook berisi ketentuan peserta, format berkas, timeline, biaya, dan mekanisme kompetisi. Kamu bisa membukanya dari menu Guidebook di website.',
+            contactText: 'Untuk pertanyaan yang sangat spesifik atau belum tercantum di guidebook, hubungi contact person panitia melalui menu Contact Us.',
+            registrationUrl: '#registration', // Ganti dengan URL pendaftaran asli bila sudah ada
+            guidebookUrl: '#guidebook',       // Ganti dengan URL guidebook asli bila sudah ada
+            contactUrl: '#contact'            // Ganti dengan URL Contact Us asli bila sudah ada
+        };
+
+        /*
+         * OPSIONAL: Sambungkan ke backend AI milikmu.
+         * Jangan pernah menaruh API key OpenAI/Gemini di file HTML ini.
+         * Buat endpoint backend, lalu set enabled: true dan endpoint-nya.
+         * Endpoint sebaiknya mengembalikan JSON: { "reply": "..." }.
+         */
+        const AI_CONFIG = {
+            enabled: false,
+            endpoint: '/api/manifest-chat'
+        };
+
+        const chatCircle = document.getElementById('chat-circle');
+        const chatBox = document.getElementById('chatBox');
+        const chatClose = document.getElementById('chatClose');
+        const clearChat = document.getElementById('clearChat');
+        const chatInput = document.getElementById('chat-input');
+        const chatSubmit = document.getElementById('chat-submit');
+        const chatBody = document.getElementById('chatBody');
+        const quickReplies = document.getElementById('quickReplies');
+
+        const STORAGE_KEY = 'manifest-smart-chat-history-v1';
+        const MAX_HISTORY = 26;
+        let lastTopic = null;
+        let isBotReplying = false;
+
+        const QUICK_REPLIES = [
+            { label: 'Tentang MANIFEST', value: 'Apa itu MANIFEST ITS?' },
+            { label: 'Cara daftar', value: 'Bagaimana cara mendaftar?' },
+            { label: 'Timeline', value: 'Kapan timeline dan deadline-nya?' },
+            { label: 'Biaya & tim', value: 'Berapa biaya dan ketentuan timnya?' },
+            { label: 'Guidebook', value: 'Di mana saya bisa melihat guidebook?' }
+        ];
+
+        /* Knowledge base dengan phrase, keyword, alias typo, dan jawaban kontekstual. */
+        const knowledgeBase = [
+            {
+                id: 'greeting',
+                phrases: ['halo', 'hai', 'hello', 'pagi', 'siang', 'sore', 'malam', 'p'],
+                keywords: ['halo', 'hai', 'hello', 'pagi', 'siang', 'sore', 'malam'],
+                answer: () => `Halo! Aku Asisten ${EVENT_INFO.name}. Aku bisa bantu seputar pendaftaran, timeline, biaya, tim, guidebook, atau contact person. Kamu lagi butuh info yang mana?`
+            },
+            {
+                id: 'about',
+                phrases: ['apa itu manifest', 'tentang manifest', 'manifest itu apa', 'manifest its apa'],
+                keywords: ['manifest', 'bpc', 'kompetisi', 'competition', 'lomba', 'event'],
+                aliases: ['menifest', 'manifes', 'manifet'],
+                answer: () => `${EVENT_INFO.name} adalah ${EVENT_INFO.eventType}, ${EVENT_INFO.description}\n\nKamu bisa lanjut tanya soal pendaftaran, ketentuan tim, timeline, atau guidebook.`
+            },
+            {
+                id: 'registration',
+                phrases: ['cara daftar', 'bagaimana daftar', 'mau daftar', 'ingin daftar', 'link daftar', 'registrasi dimana'],
+                keywords: ['daftar', 'pendaftaran', 'registrasi', 'register', 'registration', 'join'],
+                aliases: ['daptar', 'regis', 'registrasii'],
+                answer: () => `Untuk pendaftaran, ${EVENT_INFO.registrationText}\n\nKamu juga bisa cek menu Registration di website untuk langkah lengkapnya.`
+            },
+            {
+                id: 'timeline',
+                phrases: ['kapan deadline', 'deadline kapan', 'kapan timeline', 'batas daftar', 'jadwal lomba'],
+                keywords: ['timeline', 'deadline', 'jadwal', 'kapan', 'tanggal', 'batas', 'pengumpulan', 'tenggat'],
+                aliases: ['deadlin', 'dateline', 'timline'],
+                answer: () => `${EVENT_INFO.timelineText}`
+            },
+            {
+                id: 'fee',
+                phrases: ['berapa biaya', 'biaya berapa', 'harga pendaftaran', 'bayar berapa', 'htm berapa'],
+                keywords: ['biaya', 'harga', 'bayar', 'pembayaran', 'tarif', 'htm', 'fee'],
+                aliases: ['biayanya', 'harganya'],
+                answer: () => `${EVENT_INFO.feeText}`
+            },
+            {
+                id: 'team',
+                phrases: ['anggota tim berapa', 'tim berapa orang', 'ketentuan tim', 'syarat tim'],
+                keywords: ['tim', 'team', 'anggota', 'ketua', 'peserta', 'individu', 'kelompok'],
+                aliases: ['anggotaanya', 'teamm'],
+                answer: () => `${EVENT_INFO.teamText}`
+            },
+            {
+                id: 'guidebook',
+                phrases: ['dimana guidebook', 'link guidebook', 'buka guidebook', 'guide book'],
+                keywords: ['guidebook', 'panduan', 'ketentuan', 'peraturan', 'format', 'berkas', 'proposal'],
+                aliases: ['guidbook', 'gidebook', 'guidebok'],
+                answer: () => `${EVENT_INFO.guidebookText}`
+            },
+            {
+                id: 'contact',
+                phrases: ['hubungi panitia', 'contact person', 'kontak panitia', 'nomor panitia'],
+                keywords: ['kontak', 'contact', 'cp', 'panitia', 'whatsapp', 'wa', 'email'],
+                aliases: ['contack', 'whastapp'],
+                answer: () => `${EVENT_INFO.contactText}`
+            },
+            {
+                id: 'thanks',
+                phrases: ['terima kasih', 'makasih', 'thank you', 'thanks'],
+                keywords: ['makasih', 'terimakasih', 'thanks'],
+                answer: () => 'Sama-sama! Semoga persiapanmu lancar. Ada informasi lain tentang MANIFEST yang ingin kamu tanyakan?'
+            }
+        ];
+
+        const stopWords = new Set([
+            'aku', 'saya', 'kami', 'kamu', 'anda', 'yang', 'dan', 'di', 'ke', 'dari', 'untuk', 'dengan',
+            'itu', 'ini', 'nya', 'dong', 'sih', 'ya', 'kok', 'lagi', 'mau', 'ingin', 'boleh', 'bisa', 'tolong',
+            'apa', 'bagaimana', 'gimana', 'tentang', 'lebih', 'lanjut', 'info', 'informasi'
+        ]);
+
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function tokenize(text) {
+            return normalizeText(text)
+                .split(' ')
+                .filter(word => word && !stopWords.has(word));
+        }
+
+        function levenshtein(a, b) {
+            if (a === b) return 0;
+            if (!a.length) return b.length;
+            if (!b.length) return a.length;
+
+            const row = Array.from({ length: b.length + 1 }, (_, index) => index);
+            for (let i = 1; i <= a.length; i++) {
+                let previous = i;
+                row[0] = i;
+                for (let j = 1; j <= b.length; j++) {
+                    const current = row[j];
+                    row[j] = Math.min(
+                        row[j] + 1,
+                        row[j - 1] + 1,
+                        previous + (a[i - 1] === b[j - 1] ? 0 : 1)
+                    );
+                    previous = current;
+                }
+            }
+            return row[b.length];
+        }
+
+        function isSimilarWord(userWord, referenceWord) {
+            if (userWord === referenceWord) return true;
+            if (userWord.length < 4 || referenceWord.length < 4) return false;
+            const allowedDistance = userWord.length >= 7 ? 2 : 1;
+            return levenshtein(userWord, referenceWord) <= allowedDistance;
+        }
+
+        function scoreRule(question, rule) {
+            const normalizedQuestion = normalizeText(question);
+            const words = tokenize(question);
+            let score = 0;
+
+            // Kalimat yang tepat diberikan bobot tinggi.
+            rule.phrases?.forEach(phrase => {
+                const normalizedPhrase = normalizeText(phrase);
+                if (!normalizedPhrase) return;
+
+                // Frasa 1–2 karakter (contoh: “p”) hanya boleh cocok bila pesan sama persis.
+                const phraseMatched = normalizedPhrase.length < 3
+                    ? normalizedQuestion === normalizedPhrase
+                    : normalizedQuestion.includes(normalizedPhrase);
+                if (phraseMatched) score += 13;
+            });
+
+            // Kata kunci dan typo sederhana.
+            const references = [...(rule.keywords || []), ...(rule.aliases || [])].map(normalizeText);
+            references.forEach(reference => {
+                if (!reference) return;
+                const referenceMatched = reference.length < 3
+                    ? words.includes(reference)
+                    : normalizedQuestion.includes(reference);
+                if (referenceMatched) {
+                    score += 5;
+                    return;
+                }
+                if (words.some(word => isSimilarWord(word, reference))) score += 3;
+            });
+
+            // Pertanyaan susulan seperti "detailnya?" memakai konteks sebelumnya.
+            const followUp = /\b(itu|nya|yang tadi|detail|lebih lanjut|lanjut|terus)\b/.test(normalizedQuestion);
+            if (followUp && lastTopic === rule.id) score += 8;
+
+            return score;
+        }
+
+        function findBestTopic(question) {
+            const ranked = knowledgeBase
+                .map(rule => ({ rule, score: scoreRule(question, rule) }))
+                .sort((a, b) => b.score - a.score);
+
+            const best = ranked[0];
+            return best && best.score >= 5 ? best.rule : null;
+        }
+
+        function buildFallback(question) {
+            const normalized = normalizeText(question);
+            const looksLikeQuestion = /\b(berapa|kapan|dimana|bagaimana|gimana|apa|apakah)\b/.test(normalized);
+            const opening = looksLikeQuestion
+                ? 'Aku belum cukup yakin dengan topik pertanyaan itu supaya tidak memberi info yang keliru.'
+                : 'Aku belum menemukan topik itu di informasi yang tersedia.';
+
+            return `${opening}\n\nAku paling bisa bantu soal pendaftaran, timeline, biaya, ketentuan tim, guidebook, dan contact person. Coba tulis pertanyaan seperti “deadline pendaftaran kapan?” atau “timnya berapa orang?”`;
+        }
+
+        async function getExternalAIReply(question) {
+            if (!AI_CONFIG.enabled) return null;
+
+            try {
+                const response = await fetch(AI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: question,
+                        context: lastTopic,
+                        event: EVENT_INFO.name
+                    })
+                });
+
+                if (!response.ok) return null;
+                const data = await response.json();
+                return typeof data.reply === 'string' && data.reply.trim() ? data.reply.trim() : null;
+            } catch (error) {
+                console.warn('AI endpoint tidak dapat dihubungi.', error);
+                return null;
+            }
+        }
+
+        async function getBotResponse(question) {
+            const matchingRule = findBestTopic(question);
+            if (matchingRule) {
+                lastTopic = matchingRule.id;
+                return matchingRule.answer();
+            }
+
+            const aiReply = await getExternalAIReply(question);
+            if (aiReply) return aiReply;
+
+            return buildFallback(question);
+        }
+
+        function scrollToBottom() {
+            requestAnimationFrame(() => {
+                chatBody.scrollTop = chatBody.scrollHeight;
+            });
+        }
+
+        function appendMessage(text, sender, save = true) {
+            const row = document.createElement('div');
+            row.className = `message-row ${sender}`;
+
+            if (sender === 'bot') {
+                const avatar = document.createElement('div');
+                avatar.className = 'message-avatar';
+                avatar.textContent = 'M';
+                row.appendChild(avatar);
+            }
+
+            const message = document.createElement('div');
+            message.className = `message ${sender}`;
+            message.textContent = text;
+            row.appendChild(message);
+            chatBody.appendChild(row);
+            scrollToBottom();
+
+            if (save) saveHistory();
+        }
+
+        function showTyping() {
+            const row = document.createElement('div');
+            row.className = 'message-row bot';
+            row.id = 'typingIndicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = 'M';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'typing-bubble';
+            bubble.innerHTML = '<span></span><span></span><span></span>';
+
+            row.append(avatar, bubble);
+            chatBody.appendChild(row);
+            scrollToBottom();
+        }
+
+        function removeTyping() {
+            document.getElementById('typingIndicator')?.remove();
+        }
+
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveHistory() {
+            try {
+                const items = [...chatBody.querySelectorAll('.message-row')]
+                    .filter(row => !row.id)
+                    .slice(-MAX_HISTORY)
+                    .map(row => ({
+                        sender: row.classList.contains('user') ? 'user' : 'bot',
+                        text: row.querySelector('.message')?.textContent || ''
+                    }));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            } catch (error) {
+                // Browser private mode / storage penuh: chat tetap bisa dipakai.
+            }
+        }
+
+        function renderQuickReplies() {
+            quickReplies.innerHTML = '';
+            QUICK_REPLIES.forEach(item => {
+                const button = document.createElement('button');
+                button.className = 'quick-reply';
+                button.type = 'button';
+                button.textContent = item.label;
+                button.addEventListener('click', () => sendMessage(item.value));
+                quickReplies.appendChild(button);
+            });
+        }
+
+        function loadChat() {
+            const history = getHistory();
+            if (history.length) {
+                history.forEach(item => appendMessage(item.text, item.sender, false));
+                return;
+            }
+
+            appendMessage(
+                `Halo! Aku Asisten ${EVENT_INFO.name}.\n\nAku bisa bantu menjawab pertanyaan dasar tentang pendaftaran, timeline, biaya, ketentuan tim, dan guidebook. Pilih pertanyaan cepat di bawah atau tulis pertanyaanmu sendiri.`,
+                'bot',
+                false
+            );
+        }
+
+        function resizeInput() {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = `${Math.min(chatInput.scrollHeight, 94)}px`;
+        }
+
+        async function sendMessage(forcedText = '') {
+            const text = (forcedText || chatInput.value).trim();
+            if (!text || isBotReplying) return;
+
+            appendMessage(text, 'user');
+            chatInput.value = '';
+            resizeInput();
+            isBotReplying = true;
+            chatSubmit.disabled = true;
+            showTyping();
+
+            // Sedikit jeda agar respons terasa natural, tanpa memperlambat berlebihan.
+            const [reply] = await Promise.all([
+                getBotResponse(text),
+                new Promise(resolve => setTimeout(resolve, 500))
+            ]);
+
+            removeTyping();
+            appendMessage(reply, 'bot');
+            isBotReplying = false;
+            chatSubmit.disabled = false;
+            chatInput.focus();
+        }
+
+        function openChat() {
+            if (chatBox.classList.contains('show')) return;
+            chatBox.style.display = 'flex';
+            requestAnimationFrame(() => chatBox.classList.add('show'));
+            chatCircle.setAttribute('aria-expanded', 'true');
+            setTimeout(() => chatInput.focus(), 240);
+        }
+
+        function closeChat() {
+            chatBox.classList.remove('show');
+            chatCircle.setAttribute('aria-expanded', 'false');
+            setTimeout(() => {
+                if (!chatBox.classList.contains('show')) chatBox.style.display = 'none';
+            }, 280);
+        }
+
+        chatCircle.addEventListener('click', () => {
+            chatBox.classList.contains('show') ? closeChat() : openChat();
+        });
+        chatClose.addEventListener('click', closeChat);
+        chatSubmit.addEventListener('click', () => sendMessage());
+
+        chatInput.addEventListener('input', resizeInput);
+        chatInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        clearChat.addEventListener('click', () => {
+            localStorage.removeItem(STORAGE_KEY);
+            lastTopic = null;
+            chatBody.innerHTML = '';
+            loadChat();
+            chatInput.focus();
+        });
+
+        renderQuickReplies();
+        loadChat();
+    </script>
+</body>
+</html>
