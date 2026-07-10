@@ -1,9 +1,15 @@
 <?php
-session_start();
+require_once __DIR__ . '/bootstrap.php';
+manifest_start_admin_session();
+
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login.php');
+    header('Location: ' . manifest_admin_url('login'), true, 302);
     exit;
 }
+
+$adminHomeUrl = manifest_admin_url();
+$adminReferralUrl = manifest_admin_url('referral');
+$adminApiBaseUrl = manifest_admin_api_url();
 ?>
 
 <!DOCTYPE html>
@@ -81,10 +87,10 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
             <nav class="space-y-1">
                 <span class="text-[9px] font-bold uppercase tracking-widest text-manifest-dark/30 block mb-2 px-3">Data Management</span>
-                <a href="index.php" class="flex items-center gap-3 text-manifest-dark/60 hover:text-manifest-dark text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all">
+                <a href="<?= htmlspecialchars($adminHomeUrl, ENT_QUOTES, 'UTF-8') ?>" class="flex items-center gap-3 text-manifest-dark/60 hover:text-manifest-dark text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all">
                     <i class="fa-solid fa-chart-simple w-4 text-center"></i> Data Pendaftar
                 </a>
-                <a href="referral.php" class="flex items-center gap-3 bg-manifest-dark text-white text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all shadow-none">
+                <a href="<?= htmlspecialchars($adminReferralUrl, ENT_QUOTES, 'UTF-8') ?>" class="flex items-center gap-3 bg-manifest-dark text-white text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all shadow-none">
                     <i class="fa-solid fa-ticket w-4 text-center"></i>Referral Code
                 </a>
             </nav>
@@ -100,7 +106,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         <header class="h-20 border-b border-manifest-dark/10 header-blur px-8 flex justify-between items-center shrink-0 shadow-none">
             <div>
                 <h2 class="text-sm font-bold tracking-tight uppercase text-manifest-dark">Referral Engine Control</h2>
-                <p class="text-[10px] text-manifest-dark/40">Konfigurasi Kode Promo, Pembagian Diskon, & Limitasi Voucher</p>
+                <p class="text-[10px] text-manifest-dark/40">Konfigurasi kode promo, nominal potongan harga, & limit voucher</p>
             </div>
 
             <div class="bg-manifest-dark/5 px-4 py-2 rounded-xl text-right">
@@ -123,8 +129,9 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                         <input type="text" name="code" placeholder="CONTOH: MANIFESTMABA" required class="w-full mt-1.5 p-3 border border-manifest-dark/10 rounded-xl text-xs bg-white focus:outline-none focus:border-manifest-rose font-bold tracking-wider uppercase text-manifest-dark placeholder-manifest-dark/30">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-manifest-dark/60 uppercase tracking-wider">Besaran Diskon (%)</label>
-                        <input type="number" name="discount" min="1" max="100" placeholder="Masukkan angka kuantitas (1-100)" required class="w-full mt-1.5 p-3 border border-manifest-dark/10 rounded-xl text-xs bg-white focus:outline-none focus:border-manifest-rose font-semibold text-manifest-dark placeholder-manifest-dark/30">
+                        <label class="block text-[10px] font-bold text-manifest-dark/60 uppercase tracking-wider">Nominal Potongan (Rp)</label>
+                        <input type="number" name="discount" min="1000" max="10000000" step="1000" inputmode="numeric" placeholder="Contoh: 10000 = Rp10.000" required class="w-full mt-1.5 p-3 border border-manifest-dark/10 rounded-xl text-xs bg-white focus:outline-none focus:border-manifest-rose font-semibold text-manifest-dark placeholder-manifest-dark/30">
+                        <p class="mt-1.5 text-[10px] leading-relaxed text-manifest-dark/40">Masukkan angka tanpa titik atau persen. Contoh: <strong>10000</strong> untuk diskon Rp10.000.</p>
                     </div>
                     <button type="submit" class="w-full bg-manifest-dark text-white text-[10px] font-bold uppercase tracking-widest py-3.5 rounded-full hover:bg-manifest-burgundy transition-all shadow-none">
                         <i class="fa-solid fa-plus mr-1"></i> Simpan Kode Kupon
@@ -148,7 +155,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                         <thead class="text-manifest-dark/40 bg-manifest-dark/[0.02] uppercase text-[9px] tracking-widest sticky top-0 backdrop-blur-md border-b border-manifest-dark/5 z-10">
                             <tr>
                                 <th class="py-4 px-8">Kode Kupon</th>
-                                <th class="py-4 px-6">Potongan Harga (%)</th>
+                                <th class="py-4 px-6">Potongan Harga</th>
                                 <th class="py-4 px-8 text-right">Opsi Tindakan</th>
                             </tr>
                         </thead>
@@ -162,88 +169,169 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     </div>
 
     <script>
-
-        // Tambahkan fungsi ini di bagian paling atas tag <script> kamu
-function escapeHTML(string) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return String(string).replace(/[&<>"']/g, function(m) { return map[m]; });
-}
-        document.addEventListener("DOMContentLoaded", loadReferrals);
-        document.getElementById('refSearchInput').addEventListener('input', renderTableGrid);
+        const ADMIN_API_BASE = <?= json_encode($adminApiBaseUrl, JSON_UNESCAPED_SLASHES) ?>;
+        const rupiahFormatter = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
 
         let masterReferralData = [];
 
-        // Ambil Data dari API Admin
-        function loadReferrals() {
-            fetch('../api/admin/referral.php?action=list')
-            .then(res => res.json())
-            .then(data => {
-                masterReferralData = data;
-                renderTableGrid();
-            })
-            .catch(err => console.error("Sistem gagal memuat log data kupon:", err));
+        function escapeHTML(value) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+
+            return String(value ?? '').replace(/[&<>"']/g, character => map[character]);
         }
 
-        // Render Table Data Grid + Live Client Side Filtering
+        function formatRupiah(value) {
+            return rupiahFormatter.format(Number(value) || 0);
+        }
+
+        async function parseApiResponse(response) {
+            const rawResponse = await response.text();
+            let data;
+
+            try {
+                data = JSON.parse(rawResponse);
+            } catch (error) {
+                throw new Error('Respons server tidak valid. Pastikan file API referral sudah diperbarui.');
+            }
+
+            if (!response.ok || data.status === 'error') {
+                throw new Error(data.message || 'Terjadi kesalahan pada sistem referral.');
+            }
+
+            return data;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadReferrals);
+        document.getElementById('refSearchInput').addEventListener('input', renderTableGrid);
+
+        // Ambil daftar kode referral dari API admin.
+        async function loadReferrals() {
+            try {
+                const response = await fetch(ADMIN_API_BASE + 'referral?action=list', {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const data = await parseApiResponse(response);
+                masterReferralData = Array.isArray(data) ? data : [];
+                renderTableGrid();
+            } catch (error) {
+                console.error('Sistem gagal memuat data kupon:', error);
+                document.getElementById('referralList').innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center py-20 text-manifest-burgundy/70 font-medium">
+                            ${escapeHTML(error.message)}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Render tabel referral serta pencarian kode secara langsung di browser.
         function renderTableGrid() {
             const tbody = document.getElementById('referralList');
-            tbody.innerHTML = '';
-            
-            const keyword = document.getElementById('refSearchInput').value.toLowerCase();
-            const filteredData = masterReferralData.filter(item => item.code.toLowerCase().includes(keyword));
+            const keyword = document.getElementById('refSearchInput').value.trim().toLowerCase();
+            const filteredData = masterReferralData.filter(item =>
+                String(item.code || '').toLowerCase().includes(keyword)
+            );
 
-            if(filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-20 text-manifest-dark/30 font-accent italic text-lg">No coupon match found in the symphony registry.</td></tr>`;
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center py-20 text-manifest-dark/30 font-accent italic text-lg">
+                            Tidak ada kode kupon yang sesuai.
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
-            filteredData.forEach(item => {
-                tbody.innerHTML += `
+            tbody.innerHTML = filteredData.map(item => {
+                const referralId = Number(item.id) || 0;
+                const referralCode = escapeHTML(item.code);
+                const discountAmount = formatRupiah(item.discount_amount);
+
+                return `
                     <tr class="hover:bg-white/40 transition-all border-b border-manifest-dark/[0.02]">
-                        <td class="py-4 px-8 font-bold text-manifest-dark tracking-wider uppercase text-xs">${item.code}</td>
-                        <td class="py-4 px-6 font-semibold text-manifest-rose text-xs">${item.discount_percentage}% Off</td>
+                        <td class="py-4 px-8 font-bold text-manifest-dark tracking-wider uppercase text-xs">${referralCode}</td>
+                        <td class="py-4 px-6 font-semibold text-manifest-rose text-xs">${discountAmount}</td>
                         <td class="py-4 px-8 text-right">
-                            <button onclick="deleteRef(${item.id})" class="text-manifest-burgundy text-[9px] tracking-widest font-bold uppercase bg-red-100/50 hover:bg-red-100 border border-red-200/40 px-4 py-2 rounded-full transition-all cursor-pointer shadow-none">
+                            <button type="button" onclick="deleteRef(${referralId})" class="text-manifest-burgundy text-[9px] tracking-widest font-bold uppercase bg-red-100/50 hover:bg-red-100 border border-red-200/40 px-4 py-2 rounded-full transition-all cursor-pointer shadow-none">
                                 <i class="fa-solid fa-trash-can mr-1"></i> Hapus
                             </button>
                         </td>
                     </tr>
                 `;
-            });
+            }).join('');
         }
 
-        // Kirim Input Form Tambah Referral Baru Ke API Admin
-        document.getElementById('addRefForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch('../api/admin/referral.php?action=add', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
+        // Tambahkan kode referral baru dengan nominal rupiah.
+        document.getElementById('addRefForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+            try {
+                const formData = new FormData(this);
+                const response = await fetch(ADMIN_API_BASE + 'referral?action=add', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const data = await parseApiResponse(response);
                 alert(data.message);
-                if(data.status === 'success') {
-                    this.reset();
-                    loadReferrals();
-                }
-            });
+                this.reset();
+                await loadReferrals();
+            } catch (error) {
+                console.error('Gagal menambah referral:', error);
+                alert(error.message);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonText;
+            }
         });
 
-        // Request Hapus Kode via API Admin
-        function deleteRef(id) {
-            if(confirm("Apakah Anda yakin ingin menghapus kode referral ini?")) {
+        // Hapus kode referral.
+        async function deleteRef(id) {
+            if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
+                alert('ID referral tidak valid.');
+                return;
+            }
+
+            if (!confirm('Apakah Anda yakin ingin menghapus kode referral ini?')) {
+                return;
+            }
+
+            try {
                 const formData = new FormData();
-                formData.append('id', id);
-                fetch('../api/admin/referral.php?action=delete', { method: 'POST', body: formData })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
-                    loadReferrals();
+                formData.append('id', String(id));
+
+                const response = await fetch(ADMIN_API_BASE + 'referral?action=delete', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
                 });
+
+                const data = await parseApiResponse(response);
+                alert(data.message);
+                await loadReferrals();
+            } catch (error) {
+                console.error('Gagal menghapus referral:', error);
+                alert(error.message);
             }
         }
     </script>

@@ -1,9 +1,14 @@
 <?php
-session_start();
+require_once __DIR__ . '/bootstrap.php';
+manifest_start_admin_session();
+
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: index.php');
+    header('Location: ' . manifest_admin_url(), true, 302);
     exit;
 }
+
+$adminHomeUrl = manifest_admin_url();
+$adminApiBaseUrl = manifest_admin_api_url();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,6 +47,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     </div>
 
     <script>
+        const ADMIN_HOME_URL = <?= json_encode($adminHomeUrl, JSON_UNESCAPED_SLASHES) ?>;
+        const ADMIN_API_BASE = <?= json_encode($adminApiBaseUrl, JSON_UNESCAPED_SLASHES) ?>;
+
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const errorBox = document.getElementById('error-box');
@@ -49,14 +57,14 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 
             const formData = new FormData(e.target);
             try {
-                const response = await fetch('../api/admin/login.php', {
+                const response = await fetch(ADMIN_API_BASE + 'login', {
                     method: 'POST',
                     body: formData
                 });
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    window.location.href = 'index.php';
+                    window.location.href = ADMIN_HOME_URL;
                 } else {
                     errorBox.textContent = result.message;
                     errorBox.classList.remove('hidden');

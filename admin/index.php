@@ -1,9 +1,17 @@
 <?php
-session_start();
+require_once __DIR__ . '/bootstrap.php';
+manifest_start_admin_session();
+manifest_canonicalize_admin_root();
+
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login.php');
+    header('Location: ' . manifest_admin_url('login'), true, 302);
     exit;
 }
+
+$adminHomeUrl = manifest_admin_url();
+$adminReferralUrl = manifest_admin_url('referral');
+$adminLogoutUrl = manifest_admin_url('logout');
+$adminApiBaseUrl = manifest_admin_api_url();
 ?>
 
 <!DOCTYPE html>
@@ -81,10 +89,10 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
             <nav class="space-y-1">
                 <span class="text-[9px] font-bold uppercase tracking-widest text-manifest-dark/30 block mb-2 px-3">Data Management</span>
-                <a href="index.php" class="flex items-center gap-3 bg-manifest-dark text-white text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl shadow-xs transition-all">
+                <a href="<?= htmlspecialchars($adminHomeUrl, ENT_QUOTES, 'UTF-8') ?>" class="flex items-center gap-3 bg-manifest-dark text-white text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl shadow-xs transition-all">
                     <i class="fa-solid fa-chart-simple w-4 text-center"></i> Data Pendaftar
                 </a>
-                <a href="referral.php" class="flex items-center gap-3 text-manifest-dark/60 hover:text-manifest-dark text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all">
+                <a href="<?= htmlspecialchars($adminReferralUrl, ENT_QUOTES, 'UTF-8') ?>" class="flex items-center gap-3 text-manifest-dark/60 hover:text-manifest-dark text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all">
                     <i class="fa-solid fa-ticket w-4 text-center"></i> Referral Code
                 </a>
             </nav>
@@ -94,7 +102,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             <button onclick="exportTableToCSV('manifest-pendaftar-2026.csv')" class="w-full bg-white hover:bg-white/60 text-manifest-dark border border-manifest-dark/10 text-[9px] font-bold uppercase tracking-widest py-3 rounded-xl transition-all flex items-center justify-center gap-2">
                 <i class="fa-solid fa-file-csv text-xs"></i> Export CSV Data
             </button>
-            <a href="logout.php" class="w-full bg-red-100 hover:bg-red-200 text-red-700 text-[9px] font-bold uppercase tracking-widest py-3 rounded-xl transition-all flex items-center justify-center gap-2 border border-red-200/50">
+            <a href="<?= htmlspecialchars($adminLogoutUrl, ENT_QUOTES, 'UTF-8') ?>" class="w-full bg-red-100 hover:bg-red-200 text-red-700 text-[9px] font-bold uppercase tracking-widest py-3 rounded-xl transition-all flex items-center justify-center gap-2 border border-red-200/50">
                 <i class="fa-solid fa-right-from-bracket text-xs"></i> Log Out
             </a>
         </div>
@@ -128,7 +136,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                 <span class="font-accent italic text-3xl font-bold text-manifest-burgundy mt-1 block" id="side_bcc">0</span>
             </div>
             <div class="bg-white/50 p-4 rounded-2xl border border-manifest-dark/[0.04]">
-                <span class="text-[9px] text-manifest-forest block uppercase font-bold tracking-wider">Economics BPC (EBPC)</span>
+                <span class="text-[9px] text-manifest-forest block uppercase font-bold tracking-wider">English BPC (EBPC)</span>
                 <span class="font-accent italic text-3xl font-bold text-manifest-forest mt-1 block" id="side_ebpc">0</span>
             </div>
         </div>
@@ -145,7 +153,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
                 <button onclick="filterCategory('ALL')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-manifest-dark text-white transition-all" data-cate="ALL">All Movements</button>
                 <button onclick="filterCategory('BPC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="BPC">Business Plan</button>
                 <button onclick="filterCategory('BCC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="BCC">Business Case</button>
-                <button onclick="filterCategory('EBPC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="EBPC">Economics BPC</button>
+                <button onclick="filterCategory('EBPC')" class="filter-btn text-[9px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-lg bg-white/60 text-manifest-dark border border-manifest-dark/5 hover:bg-white transition-all" data-cate="EBPC">English BPC</button>
             </div>
         </div>
 
@@ -245,6 +253,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     </div>
 
     <script>
+        const ADMIN_API_BASE = <?= json_encode($adminApiBaseUrl, JSON_UNESCAPED_SLASHES) ?>;
+
         // Fungsi escape HTML demi mencegah serangan XSS melalui manipulasi input teks basis data
         function escapeHTML(string) {
             const map = {
@@ -274,7 +284,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         const rowsPerPage = 10;
 
         function loadRegistrations() {
-            fetch('../api/admin/registration.php?action=list')
+            fetch(ADMIN_API_BASE + 'registration?action=list')
             .then(res => res.json())
             .then(data => {
                 allData = data;
@@ -400,7 +410,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         }
 
         function openDetail(id) {
-            fetch(`../api/admin/registration.php?action=detail&id=${id}`)
+            fetch(ADMIN_API_BASE + `registration?action=detail&id=${id}`)
             .then(res => res.json())
             .then(data => {
                 document.getElementById('md_id').value = data.id;
@@ -457,7 +467,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
         document.getElementById('editRegForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            fetch('../api/admin/registration.php?action=update', {
+            fetch(ADMIN_API_BASE + 'registration?action=update', {
                 method: 'POST',
                 body: new FormData(this)
             })

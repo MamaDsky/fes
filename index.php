@@ -308,12 +308,11 @@
     <div id="sidebarOverlay" class="fixed inset-0 bg-manifest-dark/40 backdrop-blur-sm z-[999] opacity-0 pointer-events-none transition-opacity duration-300"></div>
     <div id="mobileSidebar" class="fixed inset-y-0 right-0 w-[85%] sm:w-[400px] bg-cream z-[1000] transform translate-x-full p-8 pt-12 flex flex-col justify-between shadow-[-10px_0_40px_rgba(34,7,1,0.15)] border-l border-white/50 transition-transform duration-300">
         
-        <!-- Kontainer Atas Sidebar: Berisi Judul Menu Navigasi + Tombol Close (X) bawaan warna Ink Gelap -->
+        <!-- Kontainer Atas Sidebar -->
         <div class="flex items-center justify-between w-full mb-8 border-b border-manifest-dark/5 pb-4">
             <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-manifest-burgundy flex items-center gap-2">
                  Menu Navigasi
             </span>
-            <!-- Tombol Silang (X) yang solid, mandiri, dan dijamin berfungsi responsif -->
             <button id="closeMenuButton" class="w-8 h-8 flex items-center justify-center rounded-full bg-manifest-dark/5 text-ink hover:bg-manifest-dark/10 focus:outline-none transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
@@ -383,7 +382,6 @@
                 </a>
             </div>
 
-            <!-- Tombol Hamburger Utama -->
             <button id="menuButton" class="block md:hidden relative w-6 h-5 flex flex-col justify-between items-end group focus:outline-none">
                 <span class="w-6 h-[1.5px] bg-white rounded-full"></span>
                 <span class="w-4 h-[1.5px] bg-white rounded-full"></span>
@@ -410,21 +408,21 @@
                     <p class="reveal delay-100 font-script italic text-[1.75rem] md:text-[2.15rem] text-amber-50 mb-1 md:mb-2 pb-0">Ignite Ideas, Rise with Symphony</p>
                     <h1 class="hero-ref-title reveal delay-200 font-heading font-bold text-[clamp(3.5rem,8.6vw,6.6rem)] leading-[0.92] text-white mt-4 md:mt-6">MANIFEST 2026</h1>
                     <p class="reveal delay-300 mt-5 max-w-[630px] mx-auto text-[0.96rem] md:text-[1.02rem] leading-relaxed text-white/80 tracking-wide font-light">
-                        MANIFEST adalah acara terbesar di Departemen Manajemen Bisnis ITS. Ajang kompetisi bisnis tingkat nasional bagi siswa/i SMA sederajat untuk mengonstruksi rencana bisnis kreatif, adaptif, dan siap berdampak di panggung nasional melalui 3 cabang kompetisi utama.
+                        MANIFEST adalah Kompetisi terbesar di Departemen Manajemen Bisnis ITS. Ajang kompetisi bisnis tingkat nasional bagi siswa/i SMA sederajat untuk mengonstruksi rencana solusi bisnis yang kreatif, adaptif, dan berkelanjutan melalui 3 cabang kompetisi utama.
                     </p>
                 </div>
 
                 <!-- Main Layout Container -->
                 <div class="w-full max-w-[940px] relative">
                     
-                    <!-- Kiri Bento Box -->
+                    <!-- Kiri Bento Box (Desktop) -->
                     <div class="hidden lg:block absolute left-[-60px] top-1/2 -translate-y-1/2 w-[210px] z-20">
                         <div class="hero-ref-side-card rounded-2xl p-5 text-left transition-all duration-300 hover:scale-[1.02]">
                             <div class="font-accent italic text-4xl leading-none text-white/60">“</div>
-                            <p class="hero-ref-quote mt-1 font-normal">Menggabungkan teknologi inovatif dengan prinsip ekonomi sirkular demi pertumbuhan masa depan yang berkelanjutan.</p>
+                            <p class="hero-ref-quote mt-1 font-normal">Menggabungkan inovasi teknologi dengan transformasi bisnis demi pertumbuhan sirkular yang berkelanjutan.</p>
                             <div class="mt-5 pt-4 border-t border-white/30">
                                 <p class="hero-ref-stat text-2xl font-bold font-accent italic text-white">3</p>
-                                <p class="font-heading text-[11px] font-bold text-white uppercase tracking-wider mt-0.5">Movements</p>
+                                <p class="font-heading text-[11px] font-bold text-white uppercase tracking-wider mt-0.5">Competitions</p>
                                 <p class="text-[10px] text-white/70 font-light mt-0.5">BPC • BCC • EBPC</p>
                             </div>
                         </div>
@@ -439,21 +437,25 @@
                             </div>
                             <div class="mt-8 flex flex-col sm:flex-row gap-3.5 font-heading text-center w-full justify-center px-4">
                                 <a href="daftar" class="hero-ref-btn-primary px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap"><i class="fas fa-file-alt mr-2 text-[9px]"></i> Daftar Sekarang</a>
-                                <a href="#movements" class="hero-ref-btn-secondary px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap"><i class="fas fa-download mr-2 text-[9px]"></i> Unduh Guidebook</a>
+                               <a href="https://drive.google.com/drive/folders/1Gnpe3-iQ-R4tzATUhynJrM4C3hLQBkvs?usp=drive_link"
+   target="_blank" rel="noopener noreferrer"
+   class="hero-ref-btn-secondary px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap">
+    <i class="fas fa-book-open mr-2 text-[9px]"></i> Unduh Guidebook
+</a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Kanan Bento Box -->
+                    <!-- Kanan Bento Box (Desktop) -->
                     <div class="hidden lg:block absolute right-[-60px] top-1/2 -translate-y-1/2 w-[210px] z-20">
                         <div class="hero-ref-side-card rounded-2xl p-5 text-right transition-all duration-300 hover:scale-[1.02]">
                             <div class="flex gap-1 text-white justify-end opacity-90 mb-2">
                                 <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                             </div>
-                            <p class="hero-ref-stat text-2xl font-bold text-white font-accent italic">Rp11 Jt</p>
-                            <p class="font-heading text-[11px] font-bold text-white uppercase tracking-wider mt-0.5">BPC Prize Pool</p>
+                            <p class="hero-ref-stat text-2xl font-bold text-white font-accent italic">Rp33++ Jt</p>
+                            <p class="font-heading text-[11px] font-bold text-white uppercase tracking-wider mt-0.5">Total Prize Pool</p>
                             <div class="w-16 h-px bg-white/30 mt-4 ml-auto"></div>
-                            <p class="text-[11px] text-white font-normal mt-3 leading-normal">Free Pass Jalur Kuliah ITS untuk Juara 1 <i class="fas fa-graduation-cap text-[10px] ml-0.5"></i></p>
+                            <p class="text-[11px] text-white font-normal mt-3 leading-normal">Freepass Jalur Masuk ITS untuk Juara 1 tiap cabang lomba!</p>
                         </div>
                     </div>
                 </div>
@@ -461,12 +463,16 @@
                 <!-- Mobile Interface Grid -->
                 <div class="hero-ref-mobile-grid lg:hidden w-full reveal delay-400 px-4">
                     <div class="hero-ref-side-card rounded-xl p-5 text-left">
-                        <p class="hero-ref-stat text-xl font-bold text-white font-accent italic">3 Main Movements</p>
-                        <p class="text-[12px] text-white font-light mt-1.5 leading-relaxed">Business Plan, Business Case, & English Business Plan Competition.</p>
+                        <p class="hero-ref-stat text-xl font-bold text-white font-accent italic">3 Cabang Kompetisi</p>
+                        <p class="text-[12px] text-white font-light mt-1.5 leading-relaxed">
+                            <b>BPC:</b> Solusi Bisnis Sirkular Berbasis Teknologi (Nasional)<br>
+                            <b>BCC:</b> Tantangan Analisis Kasus Bisnis Riil Korporasi (Nasional)<br>
+                            <b>EBPC:</b> Rencana Bisnis Global Berbahasa Inggris (Nasional/Intl)
+                        </p>
                     </div>
                     <div class="hero-ref-side-card rounded-xl p-5 text-left">
-                        <p class="hero-ref-stat text-xl font-bold text-white font-accent italic">Rp11 Jt + Golden Ticket</p>
-                        <p class="text-[12px] text-white font-light mt-1.5 leading-relaxed">Alokasi total dana pembinaan dan Free Pass tanpa tes masuk Manajemen Bisnis ITS.</p>
+                        <p class="hero-ref-stat text-xl font-bold text-white font-accent italic">Rp33 Jt + Freepass ITS</p>
+                        <p class="text-[12px] text-white font-light mt-1.5 leading-relaxed">Alokasi total pendanaan fresh money serta benefit bebas tes langsung masuk ke Manajemen Bisnis, Bisnis Digital, & IUP ITS.</p>
                     </div>
                 </div>
 
@@ -474,7 +480,7 @@
                 <div class="hero-ref-countdown reveal delay-400 mt-10 mx-4 lg:mx-auto px-6 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 w-[calc(100%-2rem)] max-w-[940px] rounded-2xl">
                     <div class="text-left">
                         <p class="font-heading text-[9px] font-bold uppercase tracking-[0.2em] text-white mb-1"><i class="fas fa-hourglass-half mr-1"></i> Pendaftaran Ditutup Dalam</p>
-                        <p class="text-[13px] text-white font-light">Segera amankan slot tim terbaikmu sebelum simfoni orkestrasi kompetisi ditutup.</p>
+                        <p class="text-[13px] text-white font-light">Segera amankan slot tim terbaikmu sebelum masa pendaftaran kompetisi ditutup.</p>
                     </div>
                     <div class="grid grid-cols-4 gap-2.5 lg:min-w-[380px] w-full lg:w-auto">
                         <div class="hero-ref-time rounded-xl py-2 px-1 text-center">
@@ -507,29 +513,29 @@
                         Why Join Us
                     </span>
                     <h2 class="font-heading text-[clamp(2.2rem,5vw,4rem)] leading-[0.92] tracking-tight text-ink mb-4">Why You Should Join MANIFEST?</h2>
-                    <p class="text-[0.98rem] md:text-[1.02rem] leading-relaxed text-ink/56 max-w-[720px] mx-auto">MANIFEST menghadirkan wadah terbaik bagi generasi muda untuk menguji ide bisnis secara mendalam dengan standar kompetisi tingkat nasional yang terstruktur</p>
+                    <p class="text-[0.98rem] md:text-[1.02rem] leading-relaxed text-ink/56 max-w-[720px] mx-auto">MANIFEST menghadirkan wadah terbaik bagi generasi muda untuk menguji ide bisnis secara mendalam dengan standar kompetisi tingkat nasional yang terstruktur.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5">
                     <div class="reveal delay-100 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">01</p>
                         <h3 class="font-heading text-[1.1rem] font-bold text-ink mb-3">Sharpen Your Business Mind</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Melatih ketajaman analisis makro, riset pasar riil, dan penyusunan strategi operasional bisnis secara holistik terstruktur.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Melatih ketajaman analisis makro, riset pasar riil, dan penyusunan strategi operasional serta finansial bisnis secara holistik terstruktur.</p>
                     </div>
                     <div class="reveal delay-200 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">02</p>
                         <h3 class="font-heading text-[1.1rem] font-bold text-ink mb-3">Build Ideas with Purpose</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Mengembangkan ide bisnis sirkular ramah lingkungan yang tidak sekadar kreatif, melainkan juga berteknologi tinggi dan bernilai ekonomi.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Mengembangkan rencana model sirkular ramah lingkungan yang tidak sekadar kreatif, melainkan juga berteknologi tinggi dan bernilai ekonomi.</p>
                     </div>
                     <div class="reveal delay-300 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">03</p>
                         <h3 class="font-heading text-[1.1rem] font-bold text-ink mb-3">Compete Nationally</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Berhadapan secara sehat dengan ratusan tim pelajar berprestasi dari berbagai sekolah di seluruh penjuru Indonesia.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Berhadapan secara sehat dengan ratusan tim pelajar berprestasi dari berbagai sekolah menengah di seluruh penjuru Indonesia.</p>
                     </div>
                     <div class="reveal delay-400 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">04</p>
                         <h3 class="font-heading text-[1.1rem] font-bold text-ink mb-3">Exclusive Golden Ticket</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Dapatkan kesempatan berharga berupa tiket Free Pass bebas tes masuk perkuliahan langsung menuju Departemen Manajemen Bisnis ITS.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Dapatkan kesempatan berharga berupa jalur prestasi langsung (Freepass) masuk kuliah ke Departemen Manajemen Bisnis ITS tanpa tes.</p>
                     </div>
                 </div>
             </div>
@@ -555,12 +561,12 @@
                     <div class="reveal delay-100 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">Benefit 01</p>
                         <h3 class="font-heading text-lg font-bold text-ink mb-2">Exclusive Training</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Pembekalan intensif taktis seputar pembuatan kerangka Business Model Canvas (BMC) hingga penyusunan naskah proposal bisnis yang solid.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Pembekalan intensif taktis seputar pembuatan kerangka rancangan strategi awal hingga penyusunan naskah proposal bisnis komprehensif.</p>
                     </div>
                     <div class="reveal delay-200 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">Benefit 02</p>
                         <h3 class="font-heading text-lg font-bold text-ink mb-2">3-Day Business Camp</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Karantina luring interaktif bagi 5 tim terbaik untuk mengikuti sesi mentoring kelas industri, simulasi taktis FinRace, dan final pitching di Surabaya.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Karantina luring interaktif bagi 5 tim terbaik untuk mengikuti sesi mentoring kelas industri, simulasi FinRace, dan final pitching di Surabaya.</p>
                     </div>
                     <div class="reveal delay-300 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">Benefit 03</p>
@@ -570,7 +576,7 @@
                     <div class="reveal delay-400 manifest-soft-card rounded-[1.5rem] p-6 transition-all duration-300">
                         <p class="font-heading text-[8px] font-bold uppercase tracking-[0.26em] text-manifest-burgundy/70 mb-4">Benefit 04</p>
                         <h3 class="font-heading text-lg font-bold text-ink mb-2">Grand Prizes & Free Pass</h3>
-                        <p class="text-sm leading-relaxed text-ink/54">Alokasi jutaan rupiah dana segar pembinaan, trofi penghargaan apresiasi, sertifikat juara nasional, beserta tiket emas langsung masuk ITS tanpa tes.</p>
+                        <p class="text-sm leading-relaxed text-ink/54">Alokasi jutaan rupiah dana segar pembinaan, trofi penghargaan apresiasi, sertifikat juara nasional, beserta tiket emas masuk ITS tanpa tes.</p>
                     </div>
                 </div>
             </div>
@@ -585,37 +591,71 @@
                         FAQ
                     </span>
                     <h2 class="font-heading text-[clamp(2.2rem,5vw,3.8rem)] leading-[0.94] tracking-tight text-ink mb-4">Frequently Asked Questions</h2>
-                    <p class="text-[0.98rem] md:text-[1.02rem] leading-relaxed text-ink/56 max-w-[700px] mx-auto">Simak rangkuman jawaban ringkas seputar ketentuan teknis operasional regulasi yang kerap ditanyakan calon pendaftar MANIFEST 2026.</p>
+                    <p class="text-[0.98rem] md:text-[1.02rem] leading-relaxed text-ink/56 max-w-[700px] mx-auto">Simak ketentuan resmi dan regulasi teknis operasional untuk ketiga cabang perlombaan MANIFEST 2026.</p>
                 </div>
 
                 <div class="space-y-4">
+                    <!-- FAQ 1 (Revisi Lintas Sekolah) -->
                     <details class="reveal delay-100 manifest-faq-item manifest-soft-card rounded-[1.35rem] p-5 md:p-6 transition-all duration-300" open>
                         <summary class="flex items-center justify-between gap-4 cursor-pointer">
-                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Siapa saja yang diperkenankan mendaftar kompetisi ini?</span>
+                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Siapa saja yang diperkenankan mendaftar dan bagaimana ketentuan timnya?</span>
                             <span class="faq-plus text-2xl leading-none text-ink/45">+</span>
                         </summary>
-                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">Kompetisi terbuka bagi seluruh kelompok aktif siswa/i tingkat SMA/SMK/MA sederajat di Indonesia. Setiap kelompok diwajibkan beranggotakan 2 orang peserta dan <b>boleh berasal dari instansi sekolah yang berbeda (namun di dalam pendaftaran cabang lomba tetap harus mengisi sekolah yang sama)</b>.</p>
+                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">
+                            Kompetisi ini ditujukan bagi siswa/i aktif tingkat <b>SMA/SMK/MA sederajat</b>. Satu tim wajib beranggotakan <b>2 orang peserta dan diperbolehkan berasal dari instansi sekolah yang berbeda (lintas sekolah)</b>. Catatan penting, pada pendaftaran cabang lomba di formulir utama, tim tetap harus sepakat mengisi satu nama sekolah yang sama agar terdata valid di sistem database panitia.
+                        </p>
                     </details>
+
+                   <!-- FAQ 2 -->
                     <details class="reveal delay-200 manifest-faq-item manifest-soft-card rounded-[1.35rem] p-5 md:p-6 transition-all duration-300">
                         <summary class="flex items-center justify-between gap-4 cursor-pointer">
-                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Bolehkah satu tim mengikuti lebih dari satu cabang kompetisi?</span>
+                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Bolehkah sebuah tim mendaftar di beberapa cabang lomba sekaligus?</span>
                             <span class="faq-plus text-2xl leading-none text-ink/45">+</span>
                         </summary>
-                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">Berdasarkan regulasi terbaru, setiap kelompok atau individu peserta <b>diperbolehkan terdaftar dan mengikuti lebih dari 1 cabang lomba</b> pada ajang MANIFEST 2026.</p>
+                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">
+                            <b>Boleh, diperbolehkan.</b> Setiap kelompok atau individu peserta <b>diperbolehkan mendaftar di beberapa cabang lomba sekaligus</b> pada ajang MANIFEST 2026 (Business Plan Competition, Business Case Competition, maupun English Business Plan Competition), dengan catatan harus mengikuti seluruh alur pendaftaran dan memenuhi berkas persyaratan yang berlaku di masing-masing cabang lomba tersebut.
+                        </p>
                     </details>
+                    <!-- FAQ 3 -->
                     <details class="reveal delay-300 manifest-faq-item manifest-soft-card rounded-[1.35rem] p-5 md:p-6 transition-all duration-300">
                         <summary class="flex items-center justify-between gap-4 cursor-pointer">
-                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Bagaimanakah penugasan berkas pada babak penyisihan awal (Preliminary)?</span>
+                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Apa saja berkas luaran yang wajib dikumpulkan pada babak Preliminary?</span>
                             <span class="faq-plus text-2xl leading-none text-ink/45">+</span>
                         </summary>
-                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">Untuk kategori utama Business Plan Competition (BPC), seluruh tim wajib menyusun skema digital Business Model Canvas (BMC) berukuran 1 halaman A4 landscape yang selaras dengan tema sirkular serta melampirkan surat pernyataan orisinalitas bermaterai.</p>
+                        <div class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6 space-y-2">
+                            <p>Format output pengerjaan babak penyisihan awal memiliki ketentuan struktur yang berbeda pada tiap cabang lomba:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><b>BPC & EBPC:</b> Setiap tim wajib menyusun skema digital <i>Business Model Canvas (BMC)</i> sebanyak 1 halaman ukuran A4 landscape. (BPC ditulis dalam Bahasa Indonesia, EBPC ditulis penuh dalam Bahasa Inggris).</li>
+                                <li><b>BCC:</b> Setiap tim diwajibkan menyelesaikan studi kasus bisnis riil korporasi dengan luaran akhir berupa dokumen analisis berbentuk <i>Executive Summary (Exsum)</i> sepanjang 1 halaman ukuran A4.</li>
+                            </ul>
+                        </div>
                     </details>
+
+                    <!-- FAQ 4 -->
                     <details class="reveal delay-400 manifest-faq-item manifest-soft-card rounded-[1.35rem] p-5 md:p-6 transition-all duration-300">
                         <summary class="flex items-center justify-between gap-4 cursor-pointer">
-                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Bagaimanakah alokasi pembiayaan akomodasi finalis selama di Surabaya?</span>
+                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Bagaimana pembagian keuntungan tiket langsung masuk (Freepass) ITS?</span>
                             <span class="faq-plus text-2xl leading-none text-ink/45">+</span>
                         </summary>
-                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">Bagi 5 kelompok finalis terbaik yang berhasil lolos kurasi babak Semifinal, seluruh pembiayaan akomodasi hotel penginapan, makan minum rutin harian, serta mobilisasi transportasi lokal selama agenda Business Camp di Surabaya ditanggung penuh oleh pihak panitia MANIFEST 2026.</p>
+                        <div class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6 space-y-2">
+                            <p>Sertifikat penghargaan Juara 1 dari masing-masing kategori perlombaan akan mendapatkan benefit prestisius berupa <b>Freepass (jalur masuk kuliah tanpa tes)</b> menuju program studi spesifik di lingkungan ITS Surabaya:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><b>Juara 1 BPC:</b> Mendapatkan Golden Ticket Freepass masuk langsung menuju Departemen <b>Manajemen Bisnis S1</b> ITS.</li>
+                                <li><b>Juara 1 BCC:</b> Mendapatkan Golden Ticket Freepass masuk langsung menuju Program Studi <b>Bisnis Digital S1</b> ITS.</li>
+                                <li><b>Juara 1 EBPC:</b> Mendapatkan Golden Ticket Freepass masuk langsung menuju <b>International Undergraduate Program (IUP)</b> Manajemen Bisnis ITS.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <!-- FAQ 5 -->
+                    <details class="reveal delay-500 manifest-faq-item manifest-soft-card rounded-[1.35rem] p-5 md:p-6 transition-all duration-300">
+                        <summary class="flex items-center justify-between gap-4 cursor-pointer">
+                            <span class="font-heading text-[1rem] md:text-[1.05rem] font-bold text-ink">Apakah seluruh alokasi akomodasi peserta selama di Surabaya ditanggung panitia?</span>
+                            <span class="faq-plus text-2xl leading-none text-ink/45">+</span>
+                        </summary>
+                        <p class="mt-4 text-sm md:text-[0.96rem] leading-relaxed text-ink/56 pr-6">
+                            <b>Ya, ditanggung sepenuhnya.</b> Khusus bagi 5 kelompok finalis terbaik dari tiap-tiap cabang kompetisi yang lolos kurasi babak Semifinal, seluruh pengeluaran akomodasi berupa penginapan hotel (3 malam), konsumsi rutin harian, serta kebutuhan mobilisasi transportasi lokal selama agenda Business Camp luring berlangsung di Surabaya akan dibiayai penuh oleh panitia MANIFEST 2026.
+                        </p>
                     </details>
                 </div>
             </div>
@@ -650,7 +690,7 @@
                     MANIFEST<span class="text-manifest-rose leading-none">.</span>
                 </a>
                 <p class="text-white/40 text-[0.875rem] max-w-sm font-body leading-relaxed mb-6 mx-auto md:mx-0">
-                    The Symphony of Business. Mengorkestrasikan inovasi, strategi, dan eksekusi untuk masa depan lanskap bisnis di Indonesia.
+                     MANIFEST adalah Kompetisi terbesar di Departemen Manajemen Bisnis ITS. Ajang kompetisi bisnis tingkat nasional bagi siswa/i SMA sederajat untuk mengonstruksi rencana solusi bisnis yang kreatif, adaptif, dan berkelanjutan melalui 3 cabang kompetisi utama.
                 </p>
                 <div class="flex justify-center md:justify-start gap-3 w-full">
                     <a href="https://instagram.com/manifest_its" target="_blank" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/50 hover:bg-manifest-burgundy hover:text-white hover:border-transparent transition-all">
@@ -665,9 +705,9 @@
                 <div>
                     <h4 class="font-heading font-bold uppercase tracking-widest text-[0.65rem] text-white/80 mb-5">Resources</h4>
                     <ul class="space-y-3 text-[0.85rem] font-body text-white/40">
-                        <li><a href="#" class="hover:text-manifest-rose transition-colors">Guidebook BPC</a></li>
-                        <li><a href="#" class="hover:text-manifest-rose transition-colors">Guidebook EBPC</a></li>
-                        <li><a href="#" class="hover:text-manifest-rose transition-colors">Guidebook BCC</a></li>
+                        <li><a href="https://drive.google.com/drive/folders/1Gd1wBiqbjl8SF48PYI78PHGMHHTvL0Xr?usp=sharing" class="hover:text-manifest-rose transition-colors">Guidebook BPC</a></li>
+                        <li><a href="https://drive.google.com/drive/folders/1hk5AvyaOPlmU_iEp2Q2j1rpe_IMX9o_h?usp=sharing" class="hover:text-manifest-rose transition-colors">Guidebook EBPC</a></li>
+                        <li><a href="https://drive.google.com/drive/folders/1Vka_YcEXPViMTdwbSKErGKkIvk4og8Qi?usp=sharing" class="hover:text-manifest-rose transition-colors">Guidebook BCC</a></li>
                         <li><a href="#" class="hover:text-manifest-rose transition-colors">FAQ</a></li>
                     </ul>
                 </div>
@@ -739,7 +779,7 @@
         window.addEventListener('scroll', updateScrollProgress);
 
         // 3. Countdown Timer Logic
-        const countDownDate = new Date("Jul 15, 2026 23:59:59").getTime();
+        const countDownDate = new Date("Aug 8, 2026 23:59:59").getTime();
 
         const x = setInterval(function() {
             const now = new Date().getTime();
@@ -787,7 +827,7 @@
             mainNavbar.classList.remove('hidden');
         }
 
-        menuButton.addEventListener('click', openMenu);
+menuButton.addEventListener('click', openMenu);
         closeMenuButton.addEventListener('click', closeMenu);
         sidebarOverlay.addEventListener('click', closeMenu);
 

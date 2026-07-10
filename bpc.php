@@ -580,35 +580,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- BUSINESS FINRACE SIMULATION -->
-        <section class="py-12 md:py-16 px-4 sm:px-6 md:px-12 relative z-20 border-t border-manifest-dark/5 bg-gradient-to-b from-white/20 to-transparent">
-            <div class="max-w-[1220px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div class="lg:col-span-7 max-w-xl text-left reveal">
-                    <span class="text-[9px] font-heading font-bold uppercase tracking-[0.2em] text-manifest-rose block mb-2">Interactive Business Simulation</span>
-                    <h2 class="font-heading text-2xl md:text-3xl font-bold text-ink uppercase tracking-tight">FinRace Simulation Mechanism</h2>
-                    <p class="text-xs leading-relaxed text-ink/60 mt-3">
-                        Sebagai bagian dari agenda eksklusif <b>3-Day Business Camp</b> luring di Surabaya, 5 tim finalis terbaik akan ditantang bertanding dalam permainan interaktif <b>FinRace</b>.
-                    </p>
-                    <p class="text-xs leading-relaxed text-ink/60 mt-2">
-                        Setiap tim dibekali modal awal berupa uang mainan taktis untuk berinvestasi pada portofolio aset, menyelesaikan ragam misi bisnis, dan adu strategi kecepatan serta profitabilitas akumulasi kepemilikan aset riil.
-                    </p>
-                </div>
-                <div class="lg:col-span-5 grid grid-cols-2 gap-3.5 font-heading text-center reveal delay-100">
-                    <div class="p-4 bg-white/70 rounded-xl border border-manifest-dark/5 shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-                        <span class="block text-xl font-bold text-manifest-burgundy font-serif italic">01</span>
-                        <span class="block text-[10px] uppercase tracking-wider text-ink/40 mt-1">Sifat Agenda</span>
-                        <span class="block text-xs font-bold text-ink mt-0.5">Offline di MB ITS</span>
-                    </div>
-                    <div class="p-4 bg-white/70 rounded-xl border border-manifest-dark/5 shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-                        <span class="block text-xl font-bold text-manifest-burgundy font-serif italic">02</span>
-                        <span class="block text-[10px] uppercase tracking-wider text-ink/40 mt-1">Kalkulasi Juara</span>
-                        <span class="block text-xs font-bold text-ink mt-0.5">Uang & Nilai Aset</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- TIMELINE SECTION -->
         <section class="py-16 md:py-20 px-4 sm:px-6 md:px-12 relative z-20 bg-[#FAF8F3]/60 border-t border-manifest-dark/5">
             <div class="max-w-[1220px] mx-auto">
@@ -627,7 +598,7 @@
                     <div class="timeline-grid-item relative bg-white border border-manifest-dark/5 rounded-[1.4rem] p-5 md:p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between min-h-[180px] md:min-h-[190px] reveal">
                         <div>
                             <div class="flex items-baseline justify-between">
-                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-burgundy/40">Mov. I</span>
+                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-burgundy/40">Phase. I</span>
                                 <span class="text-[9px] font-heading font-bold uppercase tracking-wider text-manifest-rose bg-manifest-rose/5 border border-manifest-rose/10 px-2.5 py-0.5 rounded-full">Active</span>
                             </div>
                             <h3 class="font-heading font-bold text-sm md:text-base text-manifest-dark mt-4">Pendaftaran Gelombang</h3>
@@ -641,7 +612,7 @@
                     <div class="timeline-grid-item relative bg-white border border-manifest-dark/5 rounded-[1.4rem] p-5 md:p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between min-h-[180px] md:min-h-[190px] reveal delay-100">
                         <div>
                             <div class="flex items-baseline justify-between">
-                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-burgundy/40">Mov. II</span>
+                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-burgundy/40">Phase. II</span>
                                 <span class="text-[9px] font-heading font-bold uppercase tracking-wider text-manifest-dark/30 bg-manifest-dark/5 px-2.5 py-0.5 rounded-full">Judging</span>
                             </div>
                             <h3 class="font-heading font-bold text-sm md:text-base text-manifest-dark mt-4">Penyisihan BMC</h3>
@@ -655,7 +626,7 @@
                     <div class="timeline-grid-item relative bg-white border border-manifest-dark/5 rounded-[1.4rem] p-5 md:p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between min-h-[180px] md:min-h-[190px] reveal delay-200">
                         <div>
                             <div class="flex items-baseline justify-between">
-                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-burgundy/40">Mov. III</span>
+                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-burgundy/40">Phase. III</span>
                                 <span class="text-[9px] font-heading font-bold uppercase tracking-wider text-manifest-dark/30 bg-manifest-dark/5 px-2.5 py-0.5 rounded-full">Review</span>
                             </div>
                             <h3 class="font-heading font-bold text-sm md:text-base text-manifest-dark mt-4">Semifinal Proposal</h3>
@@ -669,7 +640,7 @@
                     <div class="timeline-grid-item relative bg-manifest-dark text-white rounded-[1.4rem] p-5 md:p-6 shadow-md transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between min-h-[180px] md:min-h-[190px] reveal delay-300">
                         <div>
                             <div class="flex items-baseline justify-between">
-                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-cream">Coda</span>
+                                <span class="font-accent italic text-2xl md:text-3xl text-manifest-cream">Final</span>
                                 <span class="text-[9px] font-heading font-bold uppercase tracking-wider text-manifest-dark bg-manifest-cream px-2.5 py-0.5 rounded-full">Surabaya</span>
                             </div>
                             <h3 class="font-heading font-bold text-sm md:text-base text-white mt-4">Business Camp & Pitch</h3>
